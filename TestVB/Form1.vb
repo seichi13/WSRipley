@@ -301,14 +301,12 @@ Public Class Form1
 
                                         If CServidor = Constantes.ServidorRSAT Then
                                             For lFila = 1 To 7
-
                                                 If Trim(Mid(sDataMov, Incrementa, tamanioFilaDetalle)) <> "" Then
                                                     sDataMovAux = sDataMovAux & Mid(sDataMov, Incrementa, tamanioFilaDetalle) & "|\n|"
                                                     ErrorLog("sDataMovAux = " & sDataMovAux)
                                                 End If
 
                                                 Incrementa = Incrementa + tamanioFilaDetalle
-
                                             Next
 
                                             If Microsoft.VisualBasic.Strings.Right(sTrama, 1) = "C" Then
@@ -333,14 +331,12 @@ Public Class Form1
                                                     Incrementa = 1
                                                     If sDataMov.Length > 0 Then
                                                         For lFila = 1 To 6
-
                                                             If Trim(Mid(sDataMov, Incrementa, tamanioFilaDetalle)) <> "" Then
                                                                 sDataMovAux = sDataMovAux & Mid(sDataMov, Incrementa, tamanioFilaDetalle) & "|\n|"
                                                                 ErrorLog("sDataMovAux = " & sDataMovAux)
                                                             End If
 
                                                             Incrementa = Incrementa + tamanioFilaDetalle
-
                                                         Next
                                                     End If
                                                 End If

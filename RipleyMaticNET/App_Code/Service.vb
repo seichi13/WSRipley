@@ -3287,8 +3287,6 @@ Public Class Service
         Dim sParametros As String = ""
         Dim sMensajeErrorUsuario As String = ""
         Dim sXML As String = ""
-        Dim sAnio As String = ""
-        Dim sMes As String = ""
         Dim lContador As Long = 0
         Dim sPagina As String = ""
 
@@ -3299,10 +3297,6 @@ Public Class Service
         Dim errorMsg As String = ""
 
         Try
-
-            sAnio = Format(DateAdd("m", 1, Now), "yyyy")
-            sMes = Format(DateAdd("m", 1, Now), "mm")
-
             If sNroCuenta.Trim.Length = 8 And sNroTarjeta.Length = 16 Then
 
                 'Instancia al mirapiweb
@@ -3367,6 +3361,11 @@ Public Class Service
                 Dim sMonto2 As String = ""
                 Dim sMes3 As String = ""
                 Dim sMonto3 As String = ""
+
+                'Cambios en Trama 04/06/2015
+                Dim sCntMeses As String = ""
+                Dim sIntPagMin As String = ""
+                Dim sComPagMin As String = ""
 
                 Dim sPeriodoFinal As String = ""
                 Dim sPeriodo1 As String = ""
@@ -3486,8 +3485,6 @@ Public Class Service
 
                             'VARIABLES RESUMEN DE ESTADO DE CUENTA
                             sLineaCredito = Mid(sTrama, 253, 10)
-                            sDispEfectivoExpress = Mid(sTrama, 427, 10)
-                            sDisponibleCompras = Mid(sTrama, 387, 10)
                             sPeriodoFacturacion = Mid(sTrama, 293, 23)
                             sUltimoDiaPago = Mid(sTrama, 316, 11)
 
@@ -3497,6 +3494,9 @@ Public Class Service
                             sDeudaVencida = Mid(sTrama, 357, 10)
                             sPagoMinimoMes = Mid(sTrama, 367, 10)
                             sPagoTotalMes = Mid(sTrama, 377, 10)
+
+                            sDisponibleCompras = Mid(sTrama, 387, 10)
+                            sDispEfectivoExpress = Mid(sTrama, 427, 10)
 
 
                             'CALCULO DE PAGO TOTAL DEL MES
@@ -3525,20 +3525,62 @@ Public Class Service
                             sMes3 = Mid(sTrama, 651, 8)
                             sMonto3 = Mid(sTrama, 659, 10)
 
+                            'Cambios en Trama 04/06/2015
+                            sCntMeses = Mid(sTrama, 861, 5)
+                            sIntPagMin = Mid(sTrama, 866, 8)
+                            sComPagMin = Mid(sTrama, 874, 8)
+
                             'MOVIMIENTOS
                             sDataMovAux = ""
                             sDataMov = ""
-                            sDataMov = Mid(sTrama, 861, sTrama.Length)
+                            sDataMov = Mid(sTrama, 882, sTrama.Length)
 
                             Incrementa = 1
                             If sDataMov.Length > 0 Then
+                                If sPeriodoFinal >= Constantes.PeriodoAgrandarGlosa Then
+                                    tamanioFilaDetalle = 159
 
-                                If sPeriodoFinal >= Constantes.PeriodoInclusionTEA Then
-                                    '10-03-2015 Ocultar para pase por partes
-                                    'If sPeriodoFinal >= Constantes.PeriodoAgrandarGlosa Then
-                                    '    tamanioFilaDetalle = 159
-                                    'End If
+                                    For lFila = 1 To 7
+                                        If Trim(Mid(sDataMov, Incrementa, tamanioFilaDetalle)) <> "" Then
+                                            sDataMovAux = sDataMovAux & Mid(sDataMov, Incrementa, tamanioFilaDetalle) & "|\n|"
+                                            ErrorLog("sDataMovAux = " & sDataMovAux)
+                                        End If
 
+                                        Incrementa = Incrementa + tamanioFilaDetalle
+                                    Next
+
+                                    If Microsoft.VisualBasic.Strings.Right(sTrama, 1) = "C" Then
+                                        ErrorLog("Llamar a TramaSiguiente")
+                                        sTrama = GetTramaR192(Constantes.TramaTrece, sNroTarjeta, sNroCuenta, sPeriodoFinal, sPagina, outpputBuff)
+
+                                        If sTrama = "0" Then 'EXITO
+                                            If outpputBuff.Length > 0 Then sTrama = outpputBuff.Substring(8, outpputBuff.Length - 8)
+                                        ElseIf sTrama = "-2" Then
+                                            sTrama = ""
+                                            Exit Do
+                                        Else
+                                            sTrama = ""
+                                            Exit Do
+                                        End If
+
+                                        If Microsoft.VisualBasic.Strings.Left(sTrama, 2) <> "RU" Then
+                                            sDataMov = ""
+                                            sDataMov = Mid(sTrama, 882, sTrama.Length)
+                                            ErrorLog("Movimiento sDataMov = " & sDataMov)
+                                            Incrementa = 1
+                                            If sDataMov.Length > 0 Then
+                                                For lFila = 1 To 6
+                                                    If Trim(Mid(sDataMov, Incrementa, tamanioFilaDetalle)) <> "" Then
+                                                        sDataMovAux = sDataMovAux & Mid(sDataMov, Incrementa, tamanioFilaDetalle) & "|\n|"
+                                                        ErrorLog("sDataMovAux = " & sDataMovAux)
+                                                    End If
+
+                                                    Incrementa = Incrementa + tamanioFilaDetalle
+                                                Next
+                                            End If
+                                        End If
+                                    End If
+                                ElseIf sPeriodoFinal >= Constantes.PeriodoInclusionTEA Then
                                     For lFila = 1 To 13
 
                                         If Trim(Mid(sDataMov, Incrementa, tamanioFilaDetalle)) <> "" Then
@@ -3561,7 +3603,6 @@ Public Class Service
 
                                     Next
                                 End If
-
                             End If
 
                             sXMLCAB = ""
@@ -3586,40 +3627,72 @@ Public Class Service
                             'MOVIMIENTOS
                             sDataMovAux = ""
                             sDataMov = ""
-                            sDataMov = Mid(sTrama, 861, sTrama.Length)
+                            sDataMov = Mid(sTrama, 882, sTrama.Length)
 
                             Incrementa = 1
                             If sDataMov.Length > 0 Then
+                                If sPeriodoFinal >= Constantes.PeriodoAgrandarGlosa Then
+                                    tamanioFilaDetalle = 159
 
-                                If sPeriodoFinal >= Constantes.PeriodoInclusionTEA Then
-                                    '10-03-2015 Ocultar para pase por partes
-                                    'If sPeriodoFinal >= Constantes.PeriodoAgrandarGlosa Then
-                                    '    tamanioFilaDetalle = 159
-                                    'End If
-
-                                    For lFila = 1 To 13
-
+                                    For lFila = 1 To 7
                                         If Trim(Mid(sDataMov, Incrementa, tamanioFilaDetalle)) <> "" Then
                                             sDataMovAux = sDataMovAux & Mid(sDataMov, Incrementa, tamanioFilaDetalle) & "|\n|"
                                             ErrorLog("sDataMovAux = " & sDataMovAux)
                                         End If
 
                                         Incrementa = Incrementa + tamanioFilaDetalle
+                                    Next
 
+                                    If lContador Mod 4 <> 0 And Microsoft.VisualBasic.Strings.Right(sTrama, 1) = "C" Then
+                                        ErrorLog("Llamar a TramaSiguiente")
+                                        sTrama = GetTramaR192(Constantes.TramaTrece, sNroTarjeta, sNroCuenta, sPeriodoFinal, sPagina, outpputBuff)
+
+                                        If sTrama = "0" Then 'EXITO
+                                            If outpputBuff.Length > 0 Then sTrama = outpputBuff.Substring(8, outpputBuff.Length - 8)
+                                        ElseIf sTrama = "-2" Then
+                                            sTrama = ""
+                                            Exit Do
+                                        Else
+                                            sTrama = ""
+                                            Exit Do
+                                        End If
+
+                                        If Microsoft.VisualBasic.Strings.Left(sTrama, 2) <> "RU" Then
+                                            sDataMov = ""
+                                            sDataMov = Mid(sTrama, 882, sTrama.Length)
+                                            ErrorLog("Movimiento sDataMov = " & sDataMov)
+                                            Incrementa = 1
+                                            If sDataMov.Length > 0 Then
+                                                For lFila = 1 To 6
+                                                    If Trim(Mid(sDataMov, Incrementa, tamanioFilaDetalle)) <> "" Then
+                                                        sDataMovAux = sDataMovAux & Mid(sDataMov, Incrementa, tamanioFilaDetalle) & "|\n|"
+                                                        ErrorLog("sDataMovAux = " & sDataMovAux)
+                                                    End If
+
+                                                    Incrementa = Incrementa + tamanioFilaDetalle
+                                                Next
+                                            End If
+                                        End If
+                                    End If
+                                ElseIf sPeriodoFinal >= Constantes.PeriodoInclusionTEA Then
+                                    For lFila = 1 To 13
+                                        If Trim(Mid(sDataMov, Incrementa, tamanioFilaDetalle)) <> "" Then
+                                            sDataMovAux = sDataMovAux & Mid(sDataMov, Incrementa, tamanioFilaDetalle) & "|\n|"
+                                            ErrorLog("sDataMovAux = " & sDataMovAux)
+                                        End If
+
+                                        Incrementa = Incrementa + tamanioFilaDetalle
                                     Next
                                 Else
                                     For lFila = 1 To 13
-
                                         If Trim(Mid(sDataMov, Incrementa, tamanioFilaDetalleAnt)) <> "" Then
                                             sDataMovAux = sDataMovAux & Mid(sDataMov, Incrementa, tamanioFilaDetalleAnt) & "|\n|"
                                             ErrorLog("sDataMovAux = " & sDataMovAux)
                                         End If
 
                                         Incrementa = Incrementa + tamanioFilaDetalleAnt
-
                                     Next
                                 End If
-
                             End If
 
 
@@ -3778,8 +3851,6 @@ Public Class Service
         Dim sParametros As String = ""
         Dim sMensajeErrorUsuario As String = ""
         Dim sXML As String = ""
-        Dim sAnio As String = ""
-        Dim sMes As String = ""
         Dim lContador As Long = 0
         Dim sPagina As String = ""
 
@@ -3791,10 +3862,6 @@ Public Class Service
 
 
         Try
-
-            sAnio = Format(DateAdd("m", 1, Now), "yyyy")
-            sMes = Format(DateAdd("m", 1, Now), "mm")
-
             If sNroCuenta.Trim.Length = 8 And sNroTarjeta.Length = 16 Then
 
                 'Instancia al mirapiweb
@@ -3863,6 +3930,11 @@ Public Class Service
                 Dim sMonto2 As String = ""
                 Dim sMes3 As String = ""
                 Dim sMonto3 As String = ""
+
+                'Cambios en Trama 04/06/2015
+                Dim sCntMeses As String = ""
+                Dim sIntPagMin As String = ""
+                Dim sComPagMin As String = ""
 
                 'DATOS DE RENOVACION POR MEMBRESIA
                 Dim sFechaCargo As String = ""
@@ -3982,8 +4054,6 @@ Public Class Service
 
                             'VARIABLES RESUMEN DE ESTADO DE CUENTA
                             sLineaCredito = Mid(sTrama, 253, 10)
-                            sDispEfectivoExpress = Mid(sTrama, 427, 10)
-                            sDisponibleCompras = Mid(sTrama, 387, 10)
                             sPeriodoFacturacion = Mid(sTrama, 293, 23)
                             sUltimoDiaPago = Mid(sTrama, 316, 11)
                             sCreditoUtilizado = Mid(sTrama, 327, 10)
@@ -3992,6 +4062,8 @@ Public Class Service
                             sMoraSobreGiro = ""
                             sPagoMinimoMes = Mid(sTrama, 367, 10)
                             sPagoTotalMes = Mid(sTrama, 377, 10)
+                            sDisponibleCompras = Mid(sTrama, 387, 10)
+                            sDispEfectivoExpress = Mid(sTrama, 427, 10)
 
 
                             'CALCULO DE PAGO TOTAL DEL MES
@@ -4032,46 +4104,80 @@ Public Class Service
                             'DATOS DE RENOVACION POR MEMBRESIA
                             sFechaCargo = ""
 
-
-
+                            'Cambios en Trama 04/06/2015
+                            sCntMeses = Mid(sTrama, 861, 5)
+                            sIntPagMin = Mid(sTrama, 866, 8)
+                            sComPagMin = Mid(sTrama, 874, 8)
 
                             'MOVIMIENTOS
                             sDataMovAux = ""
                             sDataMov = ""
-                            sDataMov = Mid(sTrama, 861, sTrama.Length)
+                            sDataMov = Mid(sTrama, 882, sTrama.Length)
 
                             Incrementa = 1
                             If sDataMov.Length > 0 Then
+                                If sPeriodoFinal >= Constantes.PeriodoAgrandarGlosa Then
+                                    tamanioFilaDetalle = 159
 
-                                If sPeriodoFinal >= Constantes.PeriodoInclusionTEA Then
-                                    '10-03-2015 Ocultar para pase por partes
-                                    'If sPeriodoFinal >= Constantes.PeriodoAgrandarGlosa Then
-                                    '    tamanioFilaDetalle = 159
-                                    'End If
-
-                                    For lFila = 1 To 13
-
+                                    For lFila = 1 To 7
                                         If Trim(Mid(sDataMov, Incrementa, tamanioFilaDetalle)) <> "" Then
                                             sDataMovAux = sDataMovAux & Mid(sDataMov, Incrementa, tamanioFilaDetalle) & "|\n|"
                                             ErrorLog("sDataMovAux = " & sDataMovAux)
                                         End If
 
                                         Incrementa = Incrementa + tamanioFilaDetalle
+                                    Next
 
+                                    If Microsoft.VisualBasic.Strings.Right(sTrama, 1) = "C" Then
+                                        ErrorLog("Llamar a TramaSiguiente")
+                                        sTrama = GetTramaR192(Constantes.TramaTrece, sNroTarjeta, sNroCuenta, sPeriodoFinal, sPagina, outpputBuff)
+
+                                        If sTrama = "0" Then 'EXITO
+                                            If outpputBuff.Length > 0 Then sTrama = outpputBuff.Substring(8, outpputBuff.Length - 8)
+                                        ElseIf sTrama = "-2" Then
+                                            sTrama = ""
+                                            Exit Do
+                                        Else
+                                            sTrama = ""
+                                            Exit Do
+                                        End If
+
+                                        If Microsoft.VisualBasic.Strings.Left(sTrama, 2) <> "RU" Then
+                                            sDataMov = ""
+                                            sDataMov = Mid(sTrama, 882, sTrama.Length)
+                                            ErrorLog("Movimiento sDataMov = " & sDataMov)
+                                            Incrementa = 1
+                                            If sDataMov.Length > 0 Then
+                                                For lFila = 1 To 6
+                                                    If Trim(Mid(sDataMov, Incrementa, tamanioFilaDetalle)) <> "" Then
+                                                        sDataMovAux = sDataMovAux & Mid(sDataMov, Incrementa, tamanioFilaDetalle) & "|\n|"
+                                                        ErrorLog("sDataMovAux = " & sDataMovAux)
+                                                    End If
+
+                                                    Incrementa = Incrementa + tamanioFilaDetalle
+                                                Next
+                                            End If
+                                        End If
+                                    End If
+                                ElseIf sPeriodoFinal >= Constantes.PeriodoInclusionTEA Then
+                                    For lFila = 1 To 13
+                                        If Trim(Mid(sDataMov, Incrementa, tamanioFilaDetalle)) <> "" Then
+                                            sDataMovAux = sDataMovAux & Mid(sDataMov, Incrementa, tamanioFilaDetalle) & "|\n|"
+                                            ErrorLog("sDataMovAux = " & sDataMovAux)
+                                        End If
+
+                                        Incrementa = Incrementa + tamanioFilaDetalle
                                     Next
                                 Else
                                     For lFila = 1 To 13
-
                                         If Trim(Mid(sDataMov, Incrementa, tamanioFilaDetalleAnt)) <> "" Then
                                             sDataMovAux = sDataMovAux & Mid(sDataMov, Incrementa, tamanioFilaDetalleAnt) & "|\n|"
                                             ErrorLog("sDataMovAux = " & sDataMovAux)
                                         End If
 
                                         Incrementa = Incrementa + tamanioFilaDetalleAnt
-
                                     Next
                                 End If
-
                             End If
 
 
@@ -4099,45 +4205,74 @@ Public Class Service
                             'MOVIMIENTOS
                             sDataMovAux = ""
                             sDataMov = ""
-                            sDataMov = Mid(sTrama, 861, sTrama.Length)
+                            sDataMov = Mid(sTrama, 882, sTrama.Length)
 
                             Incrementa = 1
                             If sDataMov.Length > 0 Then
 
-                                If sPeriodoFinal >= Constantes.PeriodoInclusionTEA Then
-                                    '10-03-2015 Ocultar para pase por partes
-                                    'If sPeriodoFinal >= Constantes.PeriodoAgrandarGlosa Then
-                                    '    tamanioFilaDetalle = 159
-                                    'End If
+                                If sPeriodoFinal >= Constantes.PeriodoAgrandarGlosa Then
+                                    tamanioFilaDetalle = 159
 
-                                    For lFila = 1 To 13
-
+                                    For lFila = 1 To 7
                                         If Trim(Mid(sDataMov, Incrementa, tamanioFilaDetalle)) <> "" Then
                                             sDataMovAux = sDataMovAux & Mid(sDataMov, Incrementa, tamanioFilaDetalle) & "|\n|"
                                             ErrorLog("sDataMovAux = " & sDataMovAux)
                                         End If
 
                                         Incrementa = Incrementa + tamanioFilaDetalle
+                                    Next
 
+                                    If lContador Mod 4 <> 0 And Microsoft.VisualBasic.Strings.Right(sTrama, 1) = "C" Then
+                                        ErrorLog("Llamar a TramaSiguiente")
+                                        sTrama = GetTramaR192(Constantes.TramaTrece, sNroTarjeta, sNroCuenta, sPeriodoFinal, sPagina, outpputBuff)
+
+                                        If sTrama = "0" Then 'EXITO
+                                            If outpputBuff.Length > 0 Then sTrama = outpputBuff.Substring(8, outpputBuff.Length - 8)
+                                        ElseIf sTrama = "-2" Then
+                                            sTrama = ""
+                                            Exit Do
+                                        Else
+                                            sTrama = ""
+                                            Exit Do
+                                        End If
+
+                                        If Microsoft.VisualBasic.Strings.Left(sTrama, 2) <> "RU" Then
+                                            sDataMov = ""
+                                            sDataMov = Mid(sTrama, 882, sTrama.Length)
+                                            ErrorLog("Movimiento sDataMov = " & sDataMov)
+                                            Incrementa = 1
+                                            If sDataMov.Length > 0 Then
+                                                For lFila = 1 To 6
+                                                    If Trim(Mid(sDataMov, Incrementa, tamanioFilaDetalle)) <> "" Then
+                                                        sDataMovAux = sDataMovAux & Mid(sDataMov, Incrementa, tamanioFilaDetalle) & "|\n|"
+                                                        ErrorLog("sDataMovAux = " & sDataMovAux)
+                                                    End If
+
+                                                    Incrementa = Incrementa + tamanioFilaDetalle
+                                                Next
+                                            End If
+                                        End If
+                                    End If
+                                ElseIf sPeriodoFinal >= Constantes.PeriodoInclusionTEA Then
+                                    For lFila = 1 To 13
+                                        If Trim(Mid(sDataMov, Incrementa, tamanioFilaDetalle)) <> "" Then
+                                            sDataMovAux = sDataMovAux & Mid(sDataMov, Incrementa, tamanioFilaDetalle) & "|\n|"
+                                            ErrorLog("sDataMovAux = " & sDataMovAux)
+                                        End If
+
+                                        Incrementa = Incrementa + tamanioFilaDetalle
                                     Next
                                 Else
                                     For lFila = 1 To 13
-
                                         If Trim(Mid(sDataMov, Incrementa, tamanioFilaDetalleAnt)) <> "" Then
                                             sDataMovAux = sDataMovAux & Mid(sDataMov, Incrementa, tamanioFilaDetalleAnt) & "|\n|"
                                             ErrorLog("sDataMovAux = " & sDataMovAux)
                                         End If
 
                                         Incrementa = Incrementa + tamanioFilaDetalleAnt
-
                                     Next
                                 End If
-
-
                             End If
-
-
-
                         End If 'FIN DE VALIDACION DEL CONTADOR
 
                         'If Left(sTrama, 2) = "AC" Then 'HAY MOVIMIENTOS PENDIENTES POR LLAMAR
@@ -4293,8 +4428,6 @@ Public Class Service
         Dim sParametros As String = ""
         Dim sMensajeErrorUsuario As String = ""
         Dim sXML As String = ""
-        Dim sAnio As String = ""
-        Dim sMes As String = ""
         Dim lContador As Long = 0
         Dim sPagina As String = ""
 
@@ -4305,17 +4438,13 @@ Public Class Service
         Dim errorMsg As String = ""
 
         Try
-
-            sAnio = Format(DateAdd("m", 1, Now), "yyyy")
-            sMes = Format(DateAdd("m", 1, Now), "mm")
-
             sNroCuenta = Right(sNroCuenta.Trim, 8)
 
             If sNroCuenta.Trim.Length = 8 And sNroTarjeta.Length = 16 Then
 
                 'Instancia al mirapiweb
-                Dim obSendMirror As ClsTxMirapi = Nothing
-                obSendMirror = New ClsTxMirapi()
+                '**Dim obSendMirror As ClsTxMirapi = Nothing
+                '**obSendMirror = New ClsTxMirapi()
 
                 Dim sTrama As String = ""
                 Dim sXMLMOV As String = ""
@@ -4374,6 +4503,11 @@ Public Class Service
                 Dim sMonto2 As String = ""
                 Dim sMes3 As String = ""
                 Dim sMonto3 As String = ""
+
+                'Cambios en Trama 04/06/2015
+                Dim sCntMeses As String = ""
+                Dim sIntPagMin As String = ""
+                Dim sComPagMin As String = ""
 
                 Dim sPeriodoFinal As String = ""
                 Dim sPeriodo1 As String = ""
@@ -4488,9 +4622,8 @@ Public Class Service
 
                             'VARIABLES RESUMEN DE ESTADO DE CUENTA
                             sLineaCredito = Mid(sTrama, 253, 10)
-                            sDispEfectivoExpress = Mid(sTrama, 427, 10)
-                            sDisponibleCompras = Mid(sTrama, 387, 10)
                             sPeriodoFacturacion = Mid(sTrama, 293, 23)
+
                             sUltimoDiaPago = Mid(sTrama, 316, 11)
 
                             sCreditoUtilizado = Mid(sTrama, 327, 10)
@@ -4500,6 +4633,9 @@ Public Class Service
                             sPagoMinimoMes = Mid(sTrama, 367, 10)
                             sPagoTotalMes = Mid(sTrama, 377, 10)
 
+                            sDisponibleCompras = Mid(sTrama, 387, 10)
+
+                            sDispEfectivoExpress = Mid(sTrama, 427, 10)
 
                             'CALCULO DE PAGO TOTAL DEL MES
                             sSaldoAnterior = Mid(sTrama, 437, 10)
@@ -4527,10 +4663,15 @@ Public Class Service
                             sMes3 = Mid(sTrama, 651, 8)
                             sMonto3 = Mid(sTrama, 659, 10)
 
+                            'Cambios en Trama 04/06/2015
+                            sCntMeses = Mid(sTrama, 861, 5)
+                            sIntPagMin = Mid(sTrama, 866, 8)
+                            sComPagMin = Mid(sTrama, 874, 8)
+
                             'MOVIMIENTOS
                             sDataMovAux = ""
                             sDataMov = ""
-                            sDataMov = Mid(sTrama, 861, sTrama.Length)
+                            sDataMov = Mid(sTrama, 882, sTrama.Length)
                             ErrorLog("Movimiento sDataMov = " & sDataMov)
 
                             Incrementa = 1
@@ -4538,60 +4679,120 @@ Public Class Service
 
                                 If sPeriodoFinal >= Constantes.PeriodoInclusionTEA Then
                                     '10-03-2015 Ocultar para pase por partes
-                                    'If sPeriodoFinal >= Constantes.PeriodoAgrandarGlosa Then
-                                    '    tamanioFilaDetalle = 159
-                                    'End If
+                                    If sPeriodoFinal >= Constantes.PeriodoAgrandarGlosa Then
+                                        tamanioFilaDetalle = 159
 
-                                    If CServidor = Constantes.ServidorRSAT Then
-                                        For lFila = 1 To 12
+                                        If CServidor = Constantes.ServidorRSAT Then
+                                            For lFila = 1 To 7
 
-                                            If Trim(Mid(sDataMov, Incrementa, tamanioFilaDetalle)) <> "" Then
-                                                sDataMovAux = sDataMovAux & Mid(sDataMov, Incrementa, tamanioFilaDetalle) & "|\n|"
-                                                ErrorLog("sDataMovAux = " & sDataMovAux)
-                                            End If
+                                                If Trim(Mid(sDataMov, Incrementa, tamanioFilaDetalle)) <> "" Then
+                                                    sDataMovAux = sDataMovAux & Mid(sDataMov, Incrementa, tamanioFilaDetalle) & "|\n|"
+                                                    ErrorLog("sDataMovAux = " & sDataMovAux)
+                                                End If
 
-                                            Incrementa = Incrementa + tamanioFilaDetalle
+                                                Incrementa = Incrementa + tamanioFilaDetalle
 
-                                        Next
+                                            Next
 
-                                        If Right(sTrama, 1) = "C" Then
-                                            ErrorLog("Llamar a TramaSiguiente")
-                                            sTrama = GetTramaR192(Constantes.TramaTrece, sNroTarjeta, sNroCuenta, sPeriodoFinal, sPagina, outpputBuff)
+                                            If Right(sTrama, 1) = "C" Then
+                                                ErrorLog("Llamar a TramaSiguiente")
+                                                sTrama = GetTramaR192(Constantes.TramaTrece, sNroTarjeta, sNroCuenta, sPeriodoFinal, sPagina, outpputBuff)
 
-                                            If sTrama = "0" Then 'EXITO
-                                                If outpputBuff.Length > 0 Then sTrama = outpputBuff.Substring(8, outpputBuff.Length - 8)
+                                                If sTrama = "0" Then 'EXITO
+                                                    If outpputBuff.Length > 0 Then sTrama = outpputBuff.Substring(8, outpputBuff.Length - 8)
 
-                                            ElseIf sTrama = "-2" Then
-                                                sTrama = ""
-                                                Exit Do
-                                            Else
-                                                sTrama = ""
-                                                Exit Do
-                                            End If
+                                                ElseIf sTrama = "-2" Then
+                                                    sTrama = ""
+                                                    Exit Do
+                                                Else
+                                                    sTrama = ""
+                                                    Exit Do
+                                                End If
 
-                                            If Left(sTrama, 2) <> "RU" Then
-                                                sDataMov = ""
-                                                sDataMov = Mid(sTrama, 861, sTrama.Length)
-                                                ErrorLog("Movimiento sDataMov = " & sDataMov)
-                                                If sDataMov.Length > 0 Then
-                                                    If Trim(Mid(sDataMov, 1, tamanioFilaDetalle)) <> "" Then
-                                                        sDataMovAux = sDataMovAux & Mid(sDataMov, 1, tamanioFilaDetalle) & "|\n|"
-                                                        ErrorLog("sDataMovAux = " & sDataMovAux)
+                                                If Left(sTrama, 2) <> "RU" Then
+                                                    sDataMov = ""
+                                                    sDataMov = Mid(sTrama, 882, sTrama.Length)
+                                                    ErrorLog("Movimiento sDataMov = " & sDataMov)
+                                                    Incrementa = 1
+                                                    If sDataMov.Length > 0 Then
+                                                        For lFila = 1 To 6
+
+                                                            If Trim(Mid(sDataMov, Incrementa, tamanioFilaDetalle)) <> "" Then
+                                                                sDataMovAux = sDataMovAux & Mid(sDataMov, Incrementa, tamanioFilaDetalle) & "|\n|"
+                                                                ErrorLog("sDataMovAux = " & sDataMovAux)
+                                                            End If
+
+                                                            Incrementa = Incrementa + tamanioFilaDetalle
+
+                                                        Next
                                                     End If
                                                 End If
                                             End If
+                                        Else
+                                            For lFila = 1 To 13
+
+                                                If Trim(Mid(sDataMov, Incrementa, tamanioFilaDetalle)) <> "" Then
+                                                    sDataMovAux = sDataMovAux & Mid(sDataMov, Incrementa, tamanioFilaDetalle) & "|\n|"
+                                                    ErrorLog("sDataMovAux = " & sDataMovAux)
+                                                End If
+
+                                                Incrementa = Incrementa + tamanioFilaDetalle
+
+                                            Next
                                         End If
+
                                     Else
-                                        For lFila = 1 To 13
+                                        If CServidor = Constantes.ServidorRSAT Then
+                                            For lFila = 1 To 12
 
-                                            If Trim(Mid(sDataMov, Incrementa, tamanioFilaDetalle)) <> "" Then
-                                                sDataMovAux = sDataMovAux & Mid(sDataMov, Incrementa, tamanioFilaDetalle) & "|\n|"
-                                                ErrorLog("sDataMovAux = " & sDataMovAux)
+                                                If Trim(Mid(sDataMov, Incrementa, tamanioFilaDetalle)) <> "" Then
+                                                    sDataMovAux = sDataMovAux & Mid(sDataMov, Incrementa, tamanioFilaDetalle) & "|\n|"
+                                                    ErrorLog("sDataMovAux = " & sDataMovAux)
+                                                End If
+
+                                                Incrementa = Incrementa + tamanioFilaDetalle
+
+                                            Next
+
+                                            If Right(sTrama, 1) = "C" Then
+                                                ErrorLog("Llamar a TramaSiguiente")
+                                                sTrama = GetTramaR192(Constantes.TramaTrece, sNroTarjeta, sNroCuenta, sPeriodoFinal, sPagina, outpputBuff)
+
+                                                If sTrama = "0" Then 'EXITO
+                                                    If outpputBuff.Length > 0 Then sTrama = outpputBuff.Substring(8, outpputBuff.Length - 8)
+
+                                                ElseIf sTrama = "-2" Then
+                                                    sTrama = ""
+                                                    Exit Do
+                                                Else
+                                                    sTrama = ""
+                                                    Exit Do
+                                                End If
+
+                                                If Left(sTrama, 2) <> "RU" Then
+                                                    sDataMov = ""
+                                                    sDataMov = Mid(sTrama, 861, sTrama.Length)
+                                                    ErrorLog("Movimiento sDataMov = " & sDataMov)
+                                                    If sDataMov.Length > 0 Then
+                                                        If Trim(Mid(sDataMov, 1, tamanioFilaDetalle)) <> "" Then
+                                                            sDataMovAux = sDataMovAux & Mid(sDataMov, 1, tamanioFilaDetalle) & "|\n|"
+                                                            ErrorLog("sDataMovAux = " & sDataMovAux)
+                                                        End If
+                                                    End If
+                                                End If
                                             End If
+                                        Else
+                                            For lFila = 1 To 13
 
-                                            Incrementa = Incrementa + tamanioFilaDetalle
+                                                If Trim(Mid(sDataMov, Incrementa, tamanioFilaDetalle)) <> "" Then
+                                                    sDataMovAux = sDataMovAux & Mid(sDataMov, Incrementa, tamanioFilaDetalle) & "|\n|"
+                                                    ErrorLog("sDataMovAux = " & sDataMovAux)
+                                                End If
 
-                                        Next
+                                                Incrementa = Incrementa + tamanioFilaDetalle
+
+                                            Next
+                                        End If
                                     End If
 
                                 Else
@@ -4632,7 +4833,7 @@ Public Class Service
                             'MOVIMIENTOS
                             sDataMovAux = ""
                             sDataMov = ""
-                            sDataMov = Mid(sTrama, 861, sTrama.Length)
+                            sDataMov = Mid(sTrama, 882, sTrama.Length)
                             ErrorLog("Movimiento sDataMov = " & sDataMov)
 
                             Incrementa = 1
@@ -4640,63 +4841,131 @@ Public Class Service
 
                                 If sPeriodoFinal >= Constantes.PeriodoInclusionTEA Then
                                     '10-03-2015 Ocultar para pase por partes
-                                    'If sPeriodoFinal >= Constantes.PeriodoAgrandarGlosa Then
-                                    '    tamanioFilaDetalle = 159
-                                    'End If
+                                    If sPeriodoFinal >= Constantes.PeriodoAgrandarGlosa Then
+                                        tamanioFilaDetalle = 159
 
-                                    If CServidor = Constantes.ServidorRSAT Then
-                                        For lFila = 1 To 12
+                                        If CServidor = Constantes.ServidorRSAT Then
+                                            For lFila = 1 To 7
 
-                                            If Trim(Mid(sDataMov, Incrementa, tamanioFilaDetalle)) <> "" Then
-                                                sDataMovAux = sDataMovAux & Mid(sDataMov, Incrementa, tamanioFilaDetalle) & "|\n|"
-                                                ErrorLog("sDataMovAux = " & sDataMovAux)
-                                            End If
-
-                                            Incrementa = Incrementa + tamanioFilaDetalle
-
-                                        Next
-
-                                        If lContador Mod 4 <> 0 Then
-                                            If Right(sTrama, 1) = "C" Then
-                                                ErrorLog("Llamar a TramaSiguiente")
-                                                sTrama = GetTramaR192(Constantes.TramaTrece, sNroTarjeta, sNroCuenta, sPeriodoFinal, sPagina, outpputBuff)
-
-                                                If sTrama = "0" Then 'EXITO
-                                                    If outpputBuff.Length > 0 Then sTrama = outpputBuff.Substring(8, outpputBuff.Length - 8)
-
-                                                ElseIf sTrama = "-2" Then
-                                                    sTrama = ""
-                                                    Exit Do
-                                                Else
-                                                    sTrama = ""
-                                                    Exit Do
+                                                If Trim(Mid(sDataMov, Incrementa, tamanioFilaDetalle)) <> "" Then
+                                                    sDataMovAux = sDataMovAux & Mid(sDataMov, Incrementa, tamanioFilaDetalle) & "|\n|"
+                                                    ErrorLog("sDataMovAux = " & sDataMovAux)
                                                 End If
 
-                                                If Left(sTrama, 2) <> "RU" Then
-                                                    sDataMov = ""
-                                                    sDataMov = Mid(sTrama, 861, sTrama.Length)
-                                                    ErrorLog("Movimiento sDataMov = " & sDataMov)
-                                                    If sDataMov.Length > 0 Then
-                                                        If Trim(Mid(sDataMov, 1, tamanioFilaDetalle)) <> "" Then
-                                                            sDataMovAux = sDataMovAux & Mid(sDataMov, 1, tamanioFilaDetalle) & "|\n|"
-                                                            ErrorLog("sDataMovAux = " & sDataMovAux)
+                                                Incrementa = Incrementa + tamanioFilaDetalle
+
+                                            Next
+
+                                            If lContador Mod 4 <> 0 Then
+                                                If Right(sTrama, 1) = "C" Then
+                                                    ErrorLog("Llamar a TramaSiguiente")
+                                                    sTrama = GetTramaR192(Constantes.TramaTrece, sNroTarjeta, sNroCuenta, sPeriodoFinal, sPagina, outpputBuff)
+
+                                                    If sTrama = "0" Then 'EXITO
+                                                        If outpputBuff.Length > 0 Then sTrama = outpputBuff.Substring(8, outpputBuff.Length - 8)
+
+                                                    ElseIf sTrama = "-2" Then
+                                                        sTrama = ""
+                                                        Exit Do
+                                                    Else
+                                                        sTrama = ""
+                                                        Exit Do
+                                                    End If
+
+                                                    If Left(sTrama, 2) <> "RU" Then
+                                                        sDataMov = ""
+                                                        sDataMov = Mid(sTrama, 882, sTrama.Length)
+                                                        ErrorLog("Movimiento sDataMov = " & sDataMov)
+                                                        Incrementa = 1
+
+                                                        If sDataMov.Length > 0 Then
+
+                                                            For lFila = 1 To 6
+
+                                                                If Trim(Mid(sDataMov, Incrementa, tamanioFilaDetalle)) <> "" Then
+                                                                    sDataMovAux = sDataMovAux & Mid(sDataMov, Incrementa, tamanioFilaDetalle) & "|\n|"
+                                                                    ErrorLog("sDataMovAux = " & sDataMovAux)
+                                                                End If
+
+                                                                Incrementa = Incrementa + tamanioFilaDetalle
+
+                                                            Next
+
                                                         End If
                                                     End If
                                                 End If
                                             End If
+
+                                        Else
+                                            For lFila = 1 To 13
+
+                                                If Trim(Mid(sDataMov, Incrementa, tamanioFilaDetalle)) <> "" Then
+                                                    sDataMovAux = sDataMovAux & Mid(sDataMov, Incrementa, tamanioFilaDetalle) & "|\n|"
+                                                    ErrorLog("sDataMovAux = " & sDataMovAux)
+                                                End If
+
+                                                Incrementa = Incrementa + tamanioFilaDetalle
+
+                                            Next
                                         End If
 
                                     Else
-                                        For lFila = 1 To 13
 
-                                            If Trim(Mid(sDataMov, Incrementa, tamanioFilaDetalle)) <> "" Then
-                                                sDataMovAux = sDataMovAux & Mid(sDataMov, Incrementa, tamanioFilaDetalle) & "|\n|"
-                                                ErrorLog("sDataMovAux = " & sDataMovAux)
+                                        If CServidor = Constantes.ServidorRSAT Then
+                                            For lFila = 1 To 12
+
+                                                If Trim(Mid(sDataMov, Incrementa, tamanioFilaDetalle)) <> "" Then
+                                                    sDataMovAux = sDataMovAux & Mid(sDataMov, Incrementa, tamanioFilaDetalle) & "|\n|"
+                                                    ErrorLog("sDataMovAux = " & sDataMovAux)
+                                                End If
+
+                                                Incrementa = Incrementa + tamanioFilaDetalle
+
+                                            Next
+
+                                            If lContador Mod 4 <> 0 Then
+                                                If Right(sTrama, 1) = "C" Then
+                                                    ErrorLog("Llamar a TramaSiguiente")
+                                                    sTrama = GetTramaR192(Constantes.TramaTrece, sNroTarjeta, sNroCuenta, sPeriodoFinal, sPagina, outpputBuff)
+
+                                                    If sTrama = "0" Then 'EXITO
+                                                        If outpputBuff.Length > 0 Then sTrama = outpputBuff.Substring(8, outpputBuff.Length - 8)
+
+                                                    ElseIf sTrama = "-2" Then
+                                                        sTrama = ""
+                                                        Exit Do
+                                                    Else
+                                                        sTrama = ""
+                                                        Exit Do
+                                                    End If
+
+                                                    If Left(sTrama, 2) <> "RU" Then
+                                                        sDataMov = ""
+                                                        sDataMov = Mid(sTrama, 861, sTrama.Length)
+                                                        ErrorLog("Movimiento sDataMov = " & sDataMov)
+                                                        If sDataMov.Length > 0 Then
+                                                            If Trim(Mid(sDataMov, 1, tamanioFilaDetalle)) <> "" Then
+                                                                sDataMovAux = sDataMovAux & Mid(sDataMov, 1, tamanioFilaDetalle) & "|\n|"
+                                                                ErrorLog("sDataMovAux = " & sDataMovAux)
+                                                            End If
+                                                        End If
+                                                    End If
+                                                End If
                                             End If
 
-                                            Incrementa = Incrementa + tamanioFilaDetalle
+                                        Else
+                                            For lFila = 1 To 13
 
-                                        Next
+                                                If Trim(Mid(sDataMov, Incrementa, tamanioFilaDetalle)) <> "" Then
+                                                    sDataMovAux = sDataMovAux & Mid(sDataMov, Incrementa, tamanioFilaDetalle) & "|\n|"
+                                                    ErrorLog("sDataMovAux = " & sDataMovAux)
+                                                End If
+
+                                                Incrementa = Incrementa + tamanioFilaDetalle
+
+                                            Next
+                                        End If
+
                                     End If
 
                                 Else
@@ -6895,113 +7164,9 @@ Public Class Service
 
     End Function
 
-    '10-03-2015 Ocultar para pase por partes
+    '04-06-2015 Nuevo formato de tramas
     'DEVUELVE DETALLE DE EECC
-    '<WebMethod(Description:="Devuelve el detalle del EECC Clasica")> _
-    'Private Function FUN_DETALLE_EECC_TEA(ByVal sDataDetalle As String, ByVal sPeriodoFinal As String) As String
-
-    '    Dim sResult As String = ""
-    '    Dim SDATA_MOVIMIENTOS As String = ""
-    '    Dim ADATA_MOVIMIENTO As Array
-    '    Dim lIndice As Long = 0
-    '    Dim sRegistroAux As String = ""
-    '    Dim sRegistro As String = ""
-    '    Dim sMOV As String = ""
-
-    '    'CAMPOS MOVIMIENTOS
-    '    Dim sFechaConsumo As String = ""
-    '    Dim sFechaProceso As String = ""
-    '    Dim sNroTicket As String = ""
-    '    Dim sDescripcion As String = ""
-    '    Dim sTA As String = ""
-    '    Dim sMonto As String = ""
-    '    Dim sTEA As String = ""
-    '    Dim sNroCuotas As String = ""
-    '    Dim sCapital As String = ""
-    '    Dim sInteres As String = ""
-    '    Dim sTotal As String = ""
-
-
-    '    SDATA_MOVIMIENTOS = sDataDetalle
-
-    '    If SDATA_MOVIMIENTOS.Trim.Length > 0 Then 'IF HAY REGISTROS
-    '        ADATA_MOVIMIENTO = Split(SDATA_MOVIMIENTOS, "|\n|", , CompareMethod.Text)
-
-    '        For lIndice = 0 To ADATA_MOVIMIENTO.Length - 1
-
-    '            sRegistro = ""
-    '            sRegistro = ADATA_MOVIMIENTO(lIndice)
-
-    '            sFechaConsumo = Mid(sRegistro, 1, 11)
-    '            sFechaProceso = Mid(sRegistro, 12, 11)
-    '            sNroTicket = Mid(sRegistro, 23, 6)
-
-    '            If sPeriodoFinal >= Constantes.PeriodoAgrandarGlosa Then
-    '                sDescripcion = Mid(sRegistro, 29, 85)
-    '                sTA = Mid(sRegistro, 114, 1)
-    '                sMonto = Mid(sRegistro, 115, 9)
-
-    '                If sPeriodoFinal >= Constantes.PeriodoInclusionTEA Then
-    '                    sTEA = Mid(sRegistro, 124, 7)
-    '                    sNroCuotas = Mid(sRegistro, 131, 5)
-    '                    sCapital = Mid(sRegistro, 136, 8)
-    '                    sInteres = Mid(sRegistro, 144, 8)
-    '                    sTotal = Mid(sRegistro, 152, 8)
-    '                Else
-    '                    sTEA = "       "
-    '                    sNroCuotas = Mid(sRegistro, 124, 5)
-    '                    sCapital = Mid(sRegistro, 129, 8)
-    '                    sInteres = Mid(sRegistro, 137, 8)
-    '                    sTotal = Mid(sRegistro, 145, 8)
-    '                End If
-    '            Else
-    '                sDescripcion = Mid(sRegistro, 29, 20)
-    '                sTA = Mid(sRegistro, 49, 1)
-    '                sMonto = Mid(sRegistro, 50, 9)
-
-    '                If sPeriodoFinal >= Constantes.PeriodoInclusionTEA Then
-    '                    sTEA = Mid(sRegistro, 59, 7)
-    '                    sNroCuotas = Mid(sRegistro, 66, 5)
-    '                    sCapital = Mid(sRegistro, 71, 8)
-    '                    sInteres = Mid(sRegistro, 79, 8)
-    '                    sTotal = Mid(sRegistro, 87, 8)
-    '                Else
-    '                    sTEA = "       "
-    '                    sNroCuotas = Mid(sRegistro, 59, 5)
-    '                    sCapital = Mid(sRegistro, 64, 8)
-    '                    sInteres = Mid(sRegistro, 72, 8)
-    '                    sTotal = Mid(sRegistro, 80, 8)
-    '                End If
-
-    '            End If
-
-    '            sRegistroAux = ""
-    '            sRegistroAux = sFechaConsumo.Trim & "|\t|" & sFechaProceso.Trim & "|\t|" & sNroTicket.Trim & "|\t|" & sDescripcion.Trim & "|\t|" & sTA.Trim & "|\t|"
-    '            sRegistroAux = sRegistroAux & sMonto.Trim & "|\t|" & sTEA.Trim & "|\t|" & sNroCuotas.Trim & "|\t|" & sCapital.Trim & "|\t|" & sInteres.Trim & "|\t|"
-    '            sRegistroAux = sRegistroAux & sTotal.Trim & "|\n|"
-
-    '            sMOV = sMOV & sRegistroAux.Trim
-
-    '        Next
-
-
-    '        If sMOV.Trim.Length > 0 Then
-    '            sMOV = Left(sMOV, sMOV.Length - 4)
-    '        Else
-    '            sMOV = "" 'NO HAY MOVIMIENTOS
-    '        End If
-
-    '        sResult = sMOV
-
-    '    End If
-
-    '    Return sResult.Trim
-
-    'End Function
-
-
-    'DEVUELVE DETALLE DE EECC
-    '<WebMethod(Description:="Devuelve el detalle del EECC Clasica")> _
+    '<WebMethod(Description:="Devuelve el detalle del EECC Clasica")> _    
     Private Function FUN_DETALLE_EECC_TEA(ByVal sDataDetalle As String, ByVal sPeriodoFinal As String) As String
 
         Dim sResult As String = ""
@@ -7039,25 +7204,38 @@ Public Class Service
                 sFechaConsumo = Mid(sRegistro, 1, 11)
                 sFechaProceso = Mid(sRegistro, 12, 11)
                 sNroTicket = Mid(sRegistro, 23, 6)
-                sDescripcion = Mid(sRegistro, 29, 20)
-                sTA = Mid(sRegistro, 49, 1)
-                sMonto = Mid(sRegistro, 50, 9)
 
-                If sPeriodoFinal >= Constantes.PeriodoInclusionTEA Then
-                    sTEA = Mid(sRegistro, 59, 7)
-                    sNroCuotas = Mid(sRegistro, 66, 5)
-                    sCapital = Mid(sRegistro, 71, 8)
-                    sInteres = Mid(sRegistro, 79, 8)
-                    sTotal = Mid(sRegistro, 87, 8)
+                If sPeriodoFinal >= Constantes.PeriodoAgrandarGlosa Then
+                    sDescripcion = Mid(sRegistro, 29, 85)
+                    sTA = Mid(sRegistro, 114, 1)
+                    sMonto = Mid(sRegistro, 115, 9)
+
+                    sTEA = Mid(sRegistro, 124, 7)
+                    sNroCuotas = Mid(sRegistro, 131, 5)
+                    sCapital = Mid(sRegistro, 136, 8)
+                    sInteres = Mid(sRegistro, 144, 7)
+                    sTotal = Mid(sRegistro, 151, 9)
+
                 Else
-                    sTEA = "       "
-                    sNroCuotas = Mid(sRegistro, 59, 5)
-                    sCapital = Mid(sRegistro, 64, 8)
-                    sInteres = Mid(sRegistro, 72, 8)
-                    sTotal = Mid(sRegistro, 80, 8)
+                    sDescripcion = Mid(sRegistro, 29, 20)
+                    sTA = Mid(sRegistro, 49, 1)
+                    sMonto = Mid(sRegistro, 50, 9)
+
+                    If sPeriodoFinal >= Constantes.PeriodoInclusionTEA Then
+                        sTEA = Mid(sRegistro, 59, 7)
+                        sNroCuotas = Mid(sRegistro, 66, 5)
+                        sCapital = Mid(sRegistro, 71, 8)
+                        sInteres = Mid(sRegistro, 79, 8)
+                        sTotal = Mid(sRegistro, 87, 8)
+                    Else
+                        sTEA = "       "
+                        sNroCuotas = Mid(sRegistro, 59, 5)
+                        sCapital = Mid(sRegistro, 64, 8)
+                        sInteres = Mid(sRegistro, 72, 8)
+                        sTotal = Mid(sRegistro, 80, 8)
+                    End If
+
                 End If
-
-
 
                 sRegistroAux = ""
                 sRegistroAux = sFechaConsumo.Trim & "|\t|" & sFechaProceso.Trim & "|\t|" & sNroTicket.Trim & "|\t|" & sDescripcion.Trim & "|\t|" & sTA.Trim & "|\t|"
@@ -7070,7 +7248,7 @@ Public Class Service
 
 
             If sMOV.Trim.Length > 0 Then
-                sMOV = Left(sMOV, sMOV.Length - 4)
+                sMOV = Microsoft.VisualBasic.Strings.Left(sMOV, sMOV.Length - 4)
             Else
                 sMOV = "" 'NO HAY MOVIMIENTOS
             End If
@@ -11130,15 +11308,15 @@ Public Class Service
         procDevuelve_PeriodoFacturacion(vFecPago, vFecCorteIni, vFecCorteFin)
 
         'Formatear DDMMYYYY
-        sFechaPagox = Microsoft.VisualBasic.Strings.Right(Trim("00" & Day(vFecPago).ToString), 2) & Microsoft.VisualBasic.Strings.Right(Trim("00" & Month(vFecPago).ToString), 2) & Microsoft.VisualBasic.Strings.Right(Trim("0000" & Year(vFecPago).ToString), 4)
+        sFechaPagox = Right(Trim("00" & Day(vFecPago).ToString), 2) & Right(Trim("00" & Month(vFecPago).ToString), 2) & Right(Trim("0000" & Year(vFecPago).ToString), 4)
 
         If sFechaPagox = "01010001" Then
             Return "ERROR:NODATA"
         End If
 
 
-        sFecha1 = Microsoft.VisualBasic.Strings.Right(Trim("00" & Day(vFecCorteIni).ToString), 2) & Microsoft.VisualBasic.Strings.Right(Trim("00" & Month(vFecCorteIni).ToString), 2) & Microsoft.VisualBasic.Strings.Right(Trim("0000" & Year(vFecCorteIni).ToString), 4)
-        sFecha2 = Microsoft.VisualBasic.Strings.Right(Trim("00" & Day(vFecCorteFin).ToString), 2) & Microsoft.VisualBasic.Strings.Right(Trim("00" & Month(vFecCorteFin).ToString), 2) & Microsoft.VisualBasic.Strings.Right(Trim("0000" & Year(vFecCorteFin).ToString), 4)
+        sFecha1 = Right(Trim("00" & Day(vFecCorteIni).ToString), 2) & Right(Trim("00" & Month(vFecCorteIni).ToString), 2) & Right(Trim("0000" & Year(vFecCorteIni).ToString), 4)
+        sFecha2 = Right(Trim("00" & Day(vFecCorteFin).ToString), 2) & Right(Trim("00" & Month(vFecCorteFin).ToString), 2) & Right(Trim("0000" & Year(vFecCorteFin).ToString), 4)
 
         'PERIODO DE CORTE
 
@@ -12296,15 +12474,15 @@ Public Class Service
         procDevuelve_PeriodoFacturacion(vFecPago, vFecCorteIni, vFecCorteFin)
 
         'Formatear DDMMYYYY
-        sFechaPagox = Microsoft.VisualBasic.Strings.Right(Trim("00" & Day(vFecPago).ToString), 2) & Microsoft.VisualBasic.Strings.Right(Trim("00" & Month(vFecPago).ToString), 2) & Microsoft.VisualBasic.Strings.Right(Trim("0000" & Year(vFecPago).ToString), 4)
+        sFechaPagox = Right(Trim("00" & Day(vFecPago).ToString), 2) & Right(Trim("00" & Month(vFecPago).ToString), 2) & Right(Trim("0000" & Year(vFecPago).ToString), 4)
 
         If sFechaPagox = "01010001" And (sMigrado = "" Or sMigrado = "NO") Then
             Return "ERROR:NODATA"
         End If
 
 
-        sFecha1 = Microsoft.VisualBasic.Strings.Right(Trim("00" & Day(vFecCorteIni).ToString), 2) & Microsoft.VisualBasic.Strings.Right(Trim("00" & Month(vFecCorteIni).ToString), 2) & Microsoft.VisualBasic.Strings.Right(Trim("0000" & Year(vFecCorteIni).ToString), 4)
-        sFecha2 = Microsoft.VisualBasic.Strings.Right(Trim("00" & Day(vFecCorteFin).ToString), 2) & Microsoft.VisualBasic.Strings.Right(Trim("00" & Month(vFecCorteFin).ToString), 2) & Microsoft.VisualBasic.Strings.Right(Trim("0000" & Year(vFecCorteFin).ToString), 4)
+        sFecha1 = Right(Trim("00" & Day(vFecCorteIni).ToString), 2) & Right(Trim("00" & Month(vFecCorteIni).ToString), 2) & Right(Trim("0000" & Year(vFecCorteIni).ToString), 4)
+        sFecha2 = Right(Trim("00" & Day(vFecCorteFin).ToString), 2) & Right(Trim("00" & Month(vFecCorteFin).ToString), 2) & Right(Trim("0000" & Year(vFecCorteFin).ToString), 4)
 
         'PERIODO DE FACTURACION
         If sMigrado <> "SI" Then
