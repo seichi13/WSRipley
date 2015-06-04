@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://www.novatronic.com/accelerator/webInvoker" targetNamespace="http://www.novatronic.com/accelerator/webInvoker" version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="execute" type="tns:execute" />
+  <xs:element name="executeResponse" type="tns:executeResponse" />
+  <xs:complexType name="execute">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="request" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="executeResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="return" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+</xs:schema>

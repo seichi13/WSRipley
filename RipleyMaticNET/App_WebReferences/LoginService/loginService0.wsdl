@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:ns2="http://schemas.xmlsoap.org/soap/http" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://impl.services.omnia.ripley.com/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ns1="http://com.ripley.omnia/" name="loginService" targetNamespace="http://impl.services.omnia.ripley.com/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:import namespace="http://com.ripley.omnia/" location="http://10.25.2.130:8280/mcm-omnia-services-bpr/loginService?wsdl=loginService.wsdl" />
+  <wsdl:types />
+  <wsdl:binding name="loginServiceSoapBinding" type="ns1:loginService">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="executeTransfer">
+      <soap:operation soapAction="http://com.ripley.omnia/executeTransfer" style="document" />
+      <wsdl:input name="executeTransfer">
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="executeTransferResponse">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="loginService">
+    <wsdl:port name="LoginServiceImplPort" binding="tns:loginServiceSoapBinding">
+      <soap:address location="http://10.25.2.130:8280/mcm-omnia-services-bpr/loginService" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

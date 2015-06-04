@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<definitions xmlns:tns="http://www.novatronic.com/accelerator/webInvoker" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="defaultService" targetNamespace="http://www.novatronic.com/accelerator/webInvoker" xmlns="http://schemas.xmlsoap.org/wsdl/">
+  <types>
+    <xsd:schema>
+      <xsd:import schemaLocation="DefaultService_schema1.xsd" namespace="http://www.novatronic.com/accelerator/webInvoker" />
+    </xsd:schema>
+  </types>
+  <message name="executeResponse">
+    <part name="parameters" element="tns:executeResponse" />
+  </message>
+  <message name="execute">
+    <part name="parameters" element="tns:execute" />
+  </message>
+  <portType name="defaultService">
+    <operation name="execute">
+      <input message="tns:execute" />
+      <output message="tns:executeResponse" />
+    </operation>
+  </portType>
+  <binding name="defaultServicePortBinding" type="tns:defaultService">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <operation name="execute">
+      <soap:operation soapAction="" />
+      <input>
+        <soap:body use="literal" />
+      </input>
+      <output>
+        <soap:body use="literal" />
+      </output>
+    </operation>
+  </binding>
+  <service name="defaultService">
+    <port name="defaultServicePort" binding="tns:defaultServicePortBinding">
+      <soap:address location="http://fad29:9082/six/webinvoker/defaultService" />
+    </port>
+  </service>
+</definitions>

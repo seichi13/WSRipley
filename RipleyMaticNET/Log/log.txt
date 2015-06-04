@@ -1,0 +1,104 @@
+11/09/2014 06:43 p.m. Entro al método VALIDAR_DNI(3,1,45531745,234243)
+11/09/2014 06:43 p.m. Entro al Método BuscarMetodoPorDocumentoYTarjeta(1,3)
+11/09/2014 06:43 p.m. Entro al método LLamarMetodoParaValidarDni(,45531745,234243,3,1)
+11/09/2014 06:43 p.m. Respuesta de método VALIDAR_DNI = 
+11/09/2014 06:46 p.m. Entro al método VALIDAR_DNI(3,1,45531745,23132132)
+11/09/2014 06:46 p.m. Entro al Método BuscarMetodoPorDocumentoYTarjeta(1,3)
+11/09/2014 06:46 p.m. Entro al método LLamarMetodoParaValidarDni(,45531745,23132132,3,1)
+11/09/2014 06:46 p.m. Respuesta de método VALIDAR_DNI = 
+11/09/2014 06:48 p.m. Entro al método VALIDAR_DNI(3,1,45531745,23132132)
+11/09/2014 06:48 p.m. Entro al Método BuscarMetodoPorDocumentoYTarjeta(1,3)
+11/09/2014 06:48 p.m. Entro al método LLamarMetodoParaValidarDni(,45531745,23132132,3,1)
+11/09/2014 06:48 p.m. Respuesta de método VALIDAR_DNI = 
+11/09/2014 06:51 p.m. Entro al método VALIDAR_DNI(3,1,45531745,2342142)
+11/09/2014 06:51 p.m. Entro al Método BuscarMetodoPorDocumentoYTarjeta(1,3)
+11/09/2014 06:51 p.m. Entro al Método BuscarMetodoPorDocumentoYTarjeta(1,3) del DA
+11/09/2014 06:51 p.m. Se conecto
+11/09/2014 06:51 p.m. Abierto
+11/09/2014 06:51 p.m. Entro al método LLamarMetodoParaValidarDni(,45531745,2342142,3,1)
+11/09/2014 06:51 p.m. Respuesta de método VALIDAR_DNI = 
+11/09/2014 06:58 p.m. Entro al método VALIDAR_DNI(3,1,45531745,123123)
+11/09/2014 06:58 p.m. Entro al Método BuscarMetodoPorDocumentoYTarjeta(1,3)
+11/09/2014 06:58 p.m. Entro al Método BuscarMetodoPorDocumentoYTarjeta(1,3) del DA
+11/09/2014 06:58 p.m. Se conecto
+11/09/2014 06:58 p.m. Abierto
+11/09/2014 06:58 p.m. Entro a cmd
+11/09/2014 06:58 p.m. USP_GET_METODOTIPODOCUMENTOXTIPOTARJETA
+11/09/2014 06:58 p.m. Entro al método LLamarMetodoParaValidarDni(,45531745,123123,3,1)
+11/09/2014 06:58 p.m. Respuesta de método VALIDAR_DNI = 
+12/09/2014 06:27 p.m. Entro al método VerificarReenganche(1,1,09924784)
+12/09/2014 06:29 p.m. Entro al método VerificarReenganche(1,1,09924784)
+12/09/2014 06:29 p.m. La respuesta es 0
+12/09/2014 06:32 p.m. Entro al método VerificarReenganche(1,1,09924784)
+12/09/2014 06:32 p.m. La respuesta es 0
+12/09/2014 06:35 p.m. Entro al método VerificarReenganche(1,1,09924784)
+12/09/2014 06:35 p.m. La respuesta es 0
+12/09/2014 06:38 p.m. Entro al método VerificarReenganche(1,1,09924784)
+12/09/2014 06:38 p.m. VerificarReenganche en da
+12/09/2014 06:38 p.m. La respuesta es 0
+12/09/2014 06:42 p.m. Entro al método VerificarReenganche(1,1,09924784)
+12/09/2014 06:42 p.m. VerificarReenganche en da
+12/09/2014 06:42 p.m. Cadena de ConexionUser ID=eVTAEXP;Data Source=(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=10.100.0.185)(PORT=1525)))(CONNECT_DATA=(SERVICE_NAME=finx2d)));Password=eVTAEXP
+12/09/2014 06:42 p.m. Se conecto
+12/09/2014 06:42 p.m. La respuesta es 0
+12/09/2014 06:42 p.m. Entro al método VerificarReenganche(1,1,09924784)
+12/09/2014 06:42 p.m. VerificarReenganche en da
+12/09/2014 06:42 p.m. Cadena de ConexionUser ID=eVTAEXP;Data Source=(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=10.100.0.185)(PORT=1525)))(CONNECT_DATA=(SERVICE_NAME=finx2d)));Password=eVTAEXP
+12/09/2014 06:42 p.m. Se conecto
+12/09/2014 06:42 p.m. La respuesta es 0
+16/09/2014 10:23 a.m. Entro al método VerificarDesembolso(1,1,02818457)
+16/09/2014 10:23 a.m. La respuesta es 
+16/09/2014 10:26 a.m. Entro al método VerificarDesembolso(1,1,02818457)
+16/09/2014 10:26 a.m. User ID=eVTAEXP;Data Source=(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=10.100.0.185)(PORT=1525)))(CONNECT_DATA=(SERVICE_NAME=finx2d)));Password=eVTAEXP
+16/09/2014 10:26 a.m. ENTRO 1
+16/09/2014 10:26 a.m. ENTRO 2
+16/09/2014 10:26 a.m. La respuesta es 
+03/10/2014 01:02 p.m. Entro al método ObtenerSucursalBanco(TEST)
+03/10/2014 01:02 p.m. Salidó al método ObtenerSucursalBanco(TEST)
+03/10/2014 01:07 p.m. Entro al método ObtenerSucursalBanco(TEST)
+03/10/2014 01:07 p.m. Entro al sp USP_GET_SUCURSALBANCO(TEST)
+03/10/2014 01:07 p.m. Salidó al método ObtenerSucursalBanco(TEST)
+03/10/2014 01:07 p.m. Entro al sp USP_GET_SUCURSALBANCO(TEST)
+03/10/2014 01:07 p.m. Entro al método ObtenerSucursalBanco(TEST)
+03/10/2014 01:07 p.m. Entro al sp USP_GET_SUCURSALBANCO(TEST)
+03/10/2014 01:07 p.m. Salidó al método ObtenerSucursalBanco(TEST)
+03/10/2014 01:08 p.m. Entro al sp USP_GET_SUCURSALBANCO(TEST)
+03/10/2014 01:08 p.m. Entro al método ObtenerSucursalBanco(TEST)
+03/10/2014 01:08 p.m. Entro al sp USP_GET_SUCURSALBANCO(TEST)
+03/10/2014 01:08 p.m. Salidó al método ObtenerSucursalBanco(TEST)
+07/10/2014 03:06 p.m. Entro al método ObtenerFactorPorPlazo(36)
+07/10/2014 03:06 p.m. Salió al método ObtenerFactorPorPlazo(36)
+07/10/2014 03:07 p.m. Salió al método ObtenerFactorPorPlazo(36)
+07/10/2014 03:08 p.m. Entro al método ObtenerFactorPorPlazo(36)
+07/10/2014 03:08 p.m. Salió al método ObtenerFactorPorPlazo(36)
+07/10/2014 03:08 p.m. Entro al método ObtenerFactorPorPlazo(36)
+07/10/2014 03:08 p.m. Salió al método ObtenerFactorPorPlazo(36)
+07/10/2014 03:08 p.m. Entro al método ObtenerFactorPorPlazo(36)
+07/10/2014 03:08 p.m. Salió al método ObtenerFactorPorPlazo(36)
+07/10/2014 03:08 p.m. Entro al método ObtenerFactorPorPlazo(36)
+07/10/2014 03:08 p.m. Salió al método ObtenerFactorPorPlazo(36)
+07/10/2014 03:08 p.m. Entro al método ObtenerFactorPorPlazo(36)
+07/10/2014 03:08 p.m. Salió al método ObtenerFactorPorPlazo(36)
+07/10/2014 03:50 p.m. Entro al método ObtenerFactorPorPlazo(24)
+07/10/2014 03:50 p.m. Salió al método ObtenerFactorPorPlazo(24)
+07/10/2014 03:50 p.m. Entro al método ObtenerFactorPorPlazo(24)
+07/10/2014 03:50 p.m. Salió al método ObtenerFactorPorPlazo(24)
+11/11/2014 05:21 p.m. Inicio App
+11/11/2014 05:21 p.m. Inicia sg_RSAT_IniciarRequerimientos
+11/11/2014 05:21 p.m. objMQ.Execute()
+11/11/2014 05:22 p.m. Termina sg_RSAT_IniciarRequerimientos
+11/11/2014 05:40 p.m. Inicio App
+11/11/2014 05:40 p.m. Inicia sg_RSAT_IniciarRequerimientos
+11/11/2014 05:40 p.m. objMQ.Execute()
+11/11/2014 05:40 p.m. objMQ.Execute()
+11/11/2014 05:40 p.m. Termina sg_RSAT_IniciarRequerimientos
+11/11/2014 05:40 p.m. Application_Error ASP.global_asax
+13/11/2014 09:43 a.m. Inicio App
+13/11/2014 09:43 a.m. Inicia sg_RSAT_IniciarRequerimientos
+13/11/2014 09:43 a.m. objMQ.Service = SFSCANC0017
+13/11/2014 09:43 a.m. objMQ.Message = 0000000000SFSCANC0017                                       000000104PE00010000020027SANIUSUARIO19900040000050005010001000001010004000001040004000001050004000001070004000005
+13/11/2014 09:43 a.m. INICIA objMQ.Execute()
+13/11/2014 09:43 a.m. TERMINA objMQ.Execute()
+13/11/2014 09:43 a.m. objMQ.Response =  
+13/11/2014 09:43 a.m. Termina sg_RSAT_IniciarRequerimientos
+13/11/2014 09:43 a.m. Application_Error ASP.global_asax

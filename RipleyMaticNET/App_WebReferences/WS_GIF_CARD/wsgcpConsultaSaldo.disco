@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<discovery xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://schemas.xmlsoap.org/disco/">
+  <contractRef ref="http://rsides02/WS_GiftCard/wsgcpConsultaSaldo.asmx?wsdl" docRef="http://rsides02/WS_GiftCard/wsgcpConsultaSaldo.asmx" xmlns="http://schemas.xmlsoap.org/disco/scl/" />
+  <soap address="http://rsides02/WS_GiftCard/wsgcpConsultaSaldo.asmx" xmlns:q1="http://ripley.giftcard.com/" binding="q1:wsgcpConsultaSaldoSoap" xmlns="http://schemas.xmlsoap.org/disco/soap/" />
+  <soap address="http://rsides02/WS_GiftCard/wsgcpConsultaSaldo.asmx" xmlns:q2="http://ripley.giftcard.com/" binding="q2:wsgcpConsultaSaldoSoap12" xmlns="http://schemas.xmlsoap.org/disco/soap/" />
+</discovery>

@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://ripley.giftcard.com/" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" targetNamespace="http://ripley.giftcard.com/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://ripley.giftcard.com/">
+      <s:element name="gcpconssaldos">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="numero_giftcard" type="s:decimal" />
+            <s:element minOccurs="1" maxOccurs="1" name="opcion" type="s:short" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="gcpconssaldosResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="gcpconssaldosResult" type="tns:ArrayOfConsultaSaldo" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfConsultaSaldo">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="ConsultaSaldo" nillable="true" type="tns:ConsultaSaldo" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="ConsultaSaldo">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="NumeroTarjeta" type="s:decimal" />
+          <s:element minOccurs="1" maxOccurs="1" name="NumeroSecuencia" type="s:decimal" />
+          <s:element minOccurs="1" maxOccurs="1" name="Opcion" type="s:decimal" />
+          <s:element minOccurs="0" maxOccurs="1" name="Estado" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="Monto" type="s:double" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="ArrayOfConsultaSaldo" nillable="true" type="tns:ArrayOfConsultaSaldo" />
+    </s:schema>
+  </wsdl:types>
+  <wsdl:message name="gcpconssaldosSoapIn">
+    <wsdl:part name="parameters" element="tns:gcpconssaldos" />
+  </wsdl:message>
+  <wsdl:message name="gcpconssaldosSoapOut">
+    <wsdl:part name="parameters" element="tns:gcpconssaldosResponse" />
+  </wsdl:message>
+  <wsdl:message name="gcpconssaldosHttpGetIn">
+    <wsdl:part name="numero_giftcard" type="s:string" />
+    <wsdl:part name="opcion" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="gcpconssaldosHttpGetOut">
+    <wsdl:part name="Body" element="tns:ArrayOfConsultaSaldo" />
+  </wsdl:message>
+  <wsdl:message name="gcpconssaldosHttpPostIn">
+    <wsdl:part name="numero_giftcard" type="s:string" />
+    <wsdl:part name="opcion" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="gcpconssaldosHttpPostOut">
+    <wsdl:part name="Body" element="tns:ArrayOfConsultaSaldo" />
+  </wsdl:message>
+  <wsdl:portType name="wsgcpConsultaSaldoSoap">
+    <wsdl:operation name="gcpconssaldos">
+      <wsdl:input message="tns:gcpconssaldosSoapIn" />
+      <wsdl:output message="tns:gcpconssaldosSoapOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:portType name="wsgcpConsultaSaldoHttpGet">
+    <wsdl:operation name="gcpconssaldos">
+      <wsdl:input message="tns:gcpconssaldosHttpGetIn" />
+      <wsdl:output message="tns:gcpconssaldosHttpGetOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:portType name="wsgcpConsultaSaldoHttpPost">
+    <wsdl:operation name="gcpconssaldos">
+      <wsdl:input message="tns:gcpconssaldosHttpPostIn" />
+      <wsdl:output message="tns:gcpconssaldosHttpPostOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="wsgcpConsultaSaldoSoap" type="tns:wsgcpConsultaSaldoSoap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="gcpconssaldos">
+      <soap:operation soapAction="http://ripley.giftcard.com/gcpconssaldos" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="wsgcpConsultaSaldoSoap12" type="tns:wsgcpConsultaSaldoSoap">
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="gcpconssaldos">
+      <soap12:operation soapAction="http://ripley.giftcard.com/gcpconssaldos" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="wsgcpConsultaSaldoHttpGet" type="tns:wsgcpConsultaSaldoHttpGet">
+    <http:binding verb="GET" />
+    <wsdl:operation name="gcpconssaldos">
+      <http:operation location="/gcpconssaldos" />
+      <wsdl:input>
+        <http:urlEncoded />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="wsgcpConsultaSaldoHttpPost" type="tns:wsgcpConsultaSaldoHttpPost">
+    <http:binding verb="POST" />
+    <wsdl:operation name="gcpconssaldos">
+      <http:operation location="/gcpconssaldos" />
+      <wsdl:input>
+        <mime:content type="application/x-www-form-urlencoded" />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="wsgcpConsultaSaldo">
+    <wsdl:port name="wsgcpConsultaSaldoSoap" binding="tns:wsgcpConsultaSaldoSoap">
+      <soap:address location="http://rsides02/WS_GiftCard/wsgcpConsultaSaldo.asmx" />
+    </wsdl:port>
+    <wsdl:port name="wsgcpConsultaSaldoSoap12" binding="tns:wsgcpConsultaSaldoSoap12">
+      <soap12:address location="http://rsides02/WS_GiftCard/wsgcpConsultaSaldo.asmx" />
+    </wsdl:port>
+    <wsdl:port name="wsgcpConsultaSaldoHttpGet" binding="tns:wsgcpConsultaSaldoHttpGet">
+      <http:address location="http://rsides02/WS_GiftCard/wsgcpConsultaSaldo.asmx" />
+    </wsdl:port>
+    <wsdl:port name="wsgcpConsultaSaldoHttpPost" binding="tns:wsgcpConsultaSaldoHttpPost">
+      <http:address location="http://rsides02/WS_GiftCard/wsgcpConsultaSaldo.asmx" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

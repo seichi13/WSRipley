@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:ns1="http://com.ripley.omnia/" name="loginService" targetNamespace="http://com.ripley.omnia/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <xs:schema xmlns:tns="http://com.ripley.omnia/" targetNamespace="http://com.ripley.omnia/" version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+      <xs:element name="requestLogin" type="tns:RequestLogin" />
+      <xs:element name="requestTransfer" type="tns:RequestTransfer" />
+      <xs:element name="responseLogin">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="status" type="xs:string" />
+            <xs:element name="summary" type="xs:string" />
+            <xs:element name="detail" type="xs:string" />
+            <xs:element name="label" type="xs:string" />
+            <xs:element name="level" type="xs:string" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="responseTransfer">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="status" type="xs:string" />
+            <xs:element minOccurs="0" name="transferId" type="xs:string" />
+            <xs:element name="code" type="xs:string" />
+            <xs:element name="summary" type="xs:string" />
+            <xs:element name="originalMsg" type="xs:string" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:complexType name="RequestLogin">
+        <xs:sequence>
+          <xs:element name="channel" type="xs:string" />
+          <xs:element name="documentType" type="xs:string" />
+          <xs:element name="document" type="xs:string" />
+          <xs:element name="password" type="xs:string" />
+          <xs:element name="email" type="xs:string" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="RequestTransfer">
+        <xs:sequence>
+          <xs:element name="transferType" type="xs:string" />
+          <xs:element name="processDate" type="xs:string" />
+          <xs:element name="transferId" type="xs:string" />
+          <xs:element name="action" type="xs:string" />
+          <xs:element name="mismoTIT" type="xs:string" />
+          <xs:element minOccurs="0" name="companyName" type="xs:string" />
+          <xs:element name="amount" type="xs:double" />
+          <xs:element name="fromInstitution" type="xs:string" />
+          <xs:element name="relatedInformation" type="xs:string" />
+          <xs:element name="sourceLegalIdType" type="xs:string" />
+          <xs:element name="targetLegalIdType" type="xs:string" />
+          <xs:element name="sourceLegalId" type="xs:string" />
+          <xs:element name="targetLegalId" type="xs:string" />
+          <xs:element name="sourceName" type="xs:string" />
+          <xs:element name="targetName" type="xs:string" />
+          <xs:element name="accountNumber" type="xs:string" />
+          <xs:element name="cciDest" type="xs:string" />
+          <xs:element name="tarjDest" type="xs:string" />
+          <xs:element name="sourceProductType" type="xs:string" />
+          <xs:element name="targetProductType" type="xs:string" />
+          <xs:element minOccurs="0" name="errorCode" type="xs:string" />
+          <xs:element minOccurs="0" name="errorDetail" type="xs:string" />
+          <xs:element name="accCY" type="xs:string" />
+          <xs:element name="accOutCy" type="xs:string" />
+          <xs:element name="transferCurrency" type="xs:string" />
+          <xs:element name="sendCharge" type="xs:string" />
+          <xs:element minOccurs="0" name="mesPago" type="xs:string" />
+          <xs:element minOccurs="0" name="anioPago" type="xs:string" />
+          <xs:element minOccurs="0" name="tipoPagoHaberes" type="xs:string" />
+          <xs:element minOccurs="0" name="importeSueldo" type="xs:string" />
+          <xs:element minOccurs="0" name="transferItf" type="xs:string" />
+          <xs:element name="etranId" type="xs:string" />
+        </xs:sequence>
+      </xs:complexType>
+    </xs:schema>
+  </wsdl:types>
+  <wsdl:message name="executeTransfer">
+    <wsdl:part name="parameters" element="ns1:requestLogin" />
+  </wsdl:message>
+  <wsdl:message name="executeTransferResponse">
+    <wsdl:part name="parameters" element="ns1:responseLogin" />
+  </wsdl:message>
+  <wsdl:portType name="loginService">
+    <wsdl:operation name="executeTransfer">
+      <wsdl:input name="executeTransfer" message="ns1:executeTransfer" />
+      <wsdl:output name="executeTransferResponse" message="ns1:executeTransferResponse" />
+    </wsdl:operation>
+  </wsdl:portType>
+</wsdl:definitions>
