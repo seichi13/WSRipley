@@ -3526,18 +3526,23 @@ Public Class Service
                             sMonto3 = Mid(sTrama, 659, 10)
 
                             'Cambios en Trama 04/06/2015
-                            sCntMeses = Mid(sTrama, 861, 5)
-                            sIntPagMin = Mid(sTrama, 866, 8)
-                            sComPagMin = Mid(sTrama, 874, 8)
+                            If sPeriodoFinal >= ReadAppConfig("PeriodoAgrandarGlosa") Then
+                                sCntMeses = Mid(sTrama, 861, 5)
+                                sIntPagMin = Mid(sTrama, 866, 8)
+                                sComPagMin = Mid(sTrama, 874, 8)
+                            End If
 
                             'MOVIMIENTOS
                             sDataMovAux = ""
-                            sDataMov = ""
-                            sDataMov = Mid(sTrama, 882, sTrama.Length)
+                            If sPeriodoFinal >= ReadAppConfig("PeriodoAgrandarGlosa") Then
+                                sDataMov = Mid(sTrama, 882, sTrama.Length)
+                            Else
+                                sDataMov = Mid(sTrama, 861, sTrama.Length)
+                            End If
 
                             Incrementa = 1
                             If sDataMov.Length > 0 Then
-                                If sPeriodoFinal >= Constantes.PeriodoAgrandarGlosa Then
+                                If sPeriodoFinal >= ReadAppConfig("PeriodoAgrandarGlosa") Then
                                     tamanioFilaDetalle = 159
 
                                     For lFila = 1 To 7
@@ -3627,11 +3632,15 @@ Public Class Service
                             'MOVIMIENTOS
                             sDataMovAux = ""
                             sDataMov = ""
-                            sDataMov = Mid(sTrama, 882, sTrama.Length)
+                            If sPeriodoFinal >= ReadAppConfig("PeriodoAgrandarGlosa") Then
+                                sDataMov = Mid(sTrama, 882, sTrama.Length)
+                            Else
+                                sDataMov = Mid(sTrama, 861, sTrama.Length)
+                            End If
 
                             Incrementa = 1
                             If sDataMov.Length > 0 Then
-                                If sPeriodoFinal >= Constantes.PeriodoAgrandarGlosa Then
+                                If sPeriodoFinal >= ReadAppConfig("PeriodoAgrandarGlosa") Then
                                     tamanioFilaDetalle = 159
 
                                     For lFila = 1 To 7
@@ -4105,18 +4114,23 @@ Public Class Service
                             sFechaCargo = ""
 
                             'Cambios en Trama 04/06/2015
-                            sCntMeses = Mid(sTrama, 861, 5)
-                            sIntPagMin = Mid(sTrama, 866, 8)
-                            sComPagMin = Mid(sTrama, 874, 8)
+                            If sPeriodoFinal >= ReadAppConfig("PeriodoAgrandarGlosa") Then
+                                sCntMeses = Mid(sTrama, 861, 5)
+                                sIntPagMin = Mid(sTrama, 866, 8)
+                                sComPagMin = Mid(sTrama, 874, 8)
+                            End If
 
                             'MOVIMIENTOS
                             sDataMovAux = ""
-                            sDataMov = ""
-                            sDataMov = Mid(sTrama, 882, sTrama.Length)
+                            If sPeriodoFinal >= ReadAppConfig("PeriodoAgrandarGlosa") Then
+                                sDataMov = Mid(sTrama, 882, sTrama.Length)
+                            Else
+                                sDataMov = Mid(sTrama, 861, sTrama.Length)
+                            End If
 
                             Incrementa = 1
                             If sDataMov.Length > 0 Then
-                                If sPeriodoFinal >= Constantes.PeriodoAgrandarGlosa Then
+                                If sPeriodoFinal >= ReadAppConfig("PeriodoAgrandarGlosa") Then
                                     tamanioFilaDetalle = 159
 
                                     For lFila = 1 To 7
@@ -4205,12 +4219,16 @@ Public Class Service
                             'MOVIMIENTOS
                             sDataMovAux = ""
                             sDataMov = ""
-                            sDataMov = Mid(sTrama, 882, sTrama.Length)
+                            If sPeriodoFinal >= ReadAppConfig("PeriodoAgrandarGlosa") Then
+                                sDataMov = Mid(sTrama, 882, sTrama.Length)
+                            Else
+                                sDataMov = Mid(sTrama, 861, sTrama.Length)
+                            End If
 
                             Incrementa = 1
                             If sDataMov.Length > 0 Then
 
-                                If sPeriodoFinal >= Constantes.PeriodoAgrandarGlosa Then
+                                If sPeriodoFinal >= ReadAppConfig("PeriodoAgrandarGlosa") Then
                                     tamanioFilaDetalle = 159
 
                                     For lFila = 1 To 7
@@ -4664,14 +4682,19 @@ Public Class Service
                             sMonto3 = Mid(sTrama, 659, 10)
 
                             'Cambios en Trama 04/06/2015
-                            sCntMeses = Mid(sTrama, 861, 5)
-                            sIntPagMin = Mid(sTrama, 866, 8)
-                            sComPagMin = Mid(sTrama, 874, 8)
+                            If sPeriodoFinal >= ReadAppConfig("PeriodoAgrandarGlosa") Then
+                                sCntMeses = Mid(sTrama, 861, 5)
+                                sIntPagMin = Mid(sTrama, 866, 8)
+                                sComPagMin = Mid(sTrama, 874, 8)
+                            End If
 
                             'MOVIMIENTOS
                             sDataMovAux = ""
-                            sDataMov = ""
-                            sDataMov = Mid(sTrama, 882, sTrama.Length)
+                            If sPeriodoFinal >= ReadAppConfig("PeriodoAgrandarGlosa") And CServidor = Constantes.ServidorRSAT Then
+                                sDataMov = Mid(sTrama, 882, sTrama.Length)
+                            Else
+                                sDataMov = Mid(sTrama, 861, sTrama.Length)
+                            End If
                             ErrorLog("Movimiento sDataMov = " & sDataMov)
 
                             Incrementa = 1
@@ -4679,7 +4702,7 @@ Public Class Service
 
                                 If sPeriodoFinal >= Constantes.PeriodoInclusionTEA Then
                                     '10-03-2015 Ocultar para pase por partes
-                                    If sPeriodoFinal >= Constantes.PeriodoAgrandarGlosa Then
+                                    If sPeriodoFinal >= ReadAppConfig("PeriodoAgrandarGlosa") Then
                                         tamanioFilaDetalle = 159
 
                                         If CServidor = Constantes.ServidorRSAT Then
@@ -4730,14 +4753,12 @@ Public Class Service
                                             End If
                                         Else
                                             For lFila = 1 To 13
-
                                                 If Trim(Mid(sDataMov, Incrementa, tamanioFilaDetalle)) <> "" Then
                                                     sDataMovAux = sDataMovAux & Mid(sDataMov, Incrementa, tamanioFilaDetalle) & "|\n|"
                                                     ErrorLog("sDataMovAux = " & sDataMovAux)
                                                 End If
 
                                                 Incrementa = Incrementa + tamanioFilaDetalle
-
                                             Next
                                         End If
 
@@ -4841,7 +4862,7 @@ Public Class Service
 
                                 If sPeriodoFinal >= Constantes.PeriodoInclusionTEA Then
                                     '10-03-2015 Ocultar para pase por partes
-                                    If sPeriodoFinal >= Constantes.PeriodoAgrandarGlosa Then
+                                    If sPeriodoFinal >= ReadAppConfig("PeriodoAgrandarGlosa") Then
                                         tamanioFilaDetalle = 159
 
                                         If CServidor = Constantes.ServidorRSAT Then
@@ -7205,7 +7226,7 @@ Public Class Service
                 sFechaProceso = Mid(sRegistro, 12, 11)
                 sNroTicket = Mid(sRegistro, 23, 6)
 
-                If sPeriodoFinal >= Constantes.PeriodoAgrandarGlosa Then
+                If sPeriodoFinal >= ReadAppConfig("PeriodoAgrandarGlosa") Then
                     sDescripcion = Mid(sRegistro, 29, 85)
                     sTA = Mid(sRegistro, 114, 1)
                     sMonto = Mid(sRegistro, 115, 9)

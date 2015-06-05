@@ -31,7 +31,7 @@
     Public Const TramaDoce As String = "S"
     Public Const TramaTrece As String = "T"
 
-    Public Const PeriodoAgrandarGlosa As String = "201504"
+    Public Const PeriodoAgrandarGlosa As String = "201506"
 
 #Region "Mensajes de Email"
     Public Const MensajeEmailClave6 As String = "<p style='text-align:center;'><b>GENERACIÓN DE CLAVE WEB</b></p><p><b>Te confirmamos la Generaci&oacute;n de tu clave web en forma exitosa, ahora podr&aacute;s disfrutar de las opciones de nuestro Banca por Internet.</b></p>El presente correo electr&oacute;nico por el Banco Ripley, tiene car&aacute;cter confidencial y s&oacute;lo puede ser utilizado por la persona a quien ha sido dirigida. Su divulgaci&oacute;n, copia y/u otro no autorizado est&aacute; estrictamente prohibida.<br/>Si usted no es el destinatario esperado, por favor cont&aacute;ctese con el remitente y elimine el mensaje. Esta comunicaci&oacute;n es s&oacute;lo para prop&oacute;sitos de informaci&oacute;n y no genera obligaci&oacute;n contractual alguna a cargo de RIPLEY.<br/>"
