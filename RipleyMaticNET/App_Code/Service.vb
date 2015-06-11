@@ -2088,7 +2088,6 @@ Public Class Service
         Respuesta = String.Empty
 
         Select Case Servidor
-
             Case TServidor.SICRON
                 Respuesta = MOVIMIENTOS_CLASICA_SICRON(sNroCuenta, sDATA_MONITOR_KIOSCO)
             Case TServidor.RSAT
@@ -2098,7 +2097,6 @@ Public Class Service
         End Select
 
         If Respuesta.Substring(0, 5) <> "ERROR" And sDATA_MONITOR_KIOSCO.Length > 0 Then
-
             Dim ADATA_MONITOR As Array
             ADATA_MONITOR = Split(sDATA_MONITOR_KIOSCO, "|\t|", , CompareMethod.Text)
 
@@ -2108,12 +2106,9 @@ Public Class Service
 
             'GUADAR LOG CONSULTAS
             SAVE_LOG_CONSULTAS(sIDSucursal.Trim, sIDTerminal.Trim, "34", FUN_BUSCAR_TIPO_TARJETA(sNroTarjetax.Trim))
-
         End If
 
-
         Return Respuesta
-
     End Function
 
     Private Function MOVIMIENTOS_CLASICA_SICRON(ByVal sNroCuenta As String, ByVal sDATA_MONITOR_KIOSCO As String) As String
@@ -3275,8 +3270,6 @@ Public Class Service
         Respuesta = ESTADO_CUENTA_CLASICA_RSAT(sNroTarjeta, sNroCuenta, sDATA_MONITOR_KIOSCO, SERVIDOR)
 
         Return Respuesta
-
-
     End Function
 
 
@@ -3624,8 +3617,7 @@ Public Class Service
                             sXMLPIE = sXMLPIE & "|\t|" & sCuotaMes_Min.Trim & "|\t|" & sInteres_Min.Trim & "|\t|" & sComisionCargos_Min.Trim
                             sXMLPIE = sXMLPIE & "|\t|" & sPagoMinimoMes_Min.Trim & "|\t|" & sMes1.Trim & "|\t|" & sMonto1.Trim
                             sXMLPIE = sXMLPIE & "|\t|" & sMes2.Trim & "|\t|" & sMonto2.Trim & "|\t|" & sMes3.Trim & "|\t|" & sMonto3.Trim
-
-
+                            sXMLPIE = sXMLPIE & "|\t|" & sCntMeses.Trim & "|\t|" & sIntPagMin.Trim & "|\t|" & sComPagMin.Trim
                         Else
                             'EVALUAR LA SEGUNDA CALL SOLO MOVIMIENTOS CONTADOR DE LLAMADAS
 
@@ -4211,6 +4203,7 @@ Public Class Service
                             sXMLPIE = sXMLPIE & "|\t|" & s50CapCuotas_op.Trim & "|\t|" & sInteres_op.Trim & "|\t|" & sComisionesCargos_op.Trim
                             sXMLPIE = sXMLPIE & "|\t|" & sPagoMinimo_op.Trim & "|\t|" & sMes1.Trim & "|\t|" & sMonto1.Trim
                             sXMLPIE = sXMLPIE & "|\t|" & sMes2.Trim & "|\t|" & sMonto2.Trim & "|\t|" & sMes3.Trim & "|\t|" & sMonto3.Trim & "|\t|" & sFechaCargo.Trim
+                            sXMLPIE = sXMLPIE & "|\t|" & sCntMeses.Trim & "|\t|" & sIntPagMin.Trim & "|\t|" & sComPagMin.Trim
 
 
                         Else
@@ -4845,6 +4838,7 @@ Public Class Service
                             sXMLPIE = sXMLPIE & "|\t|" & sCuotaMes_Min.Trim & "|\t|" & sInteres_Min.Trim & "|\t|" & sComisionCargos_Min.Trim
                             sXMLPIE = sXMLPIE & "|\t|" & sPagoMinimoMes_Min.Trim & "|\t|" & sMes1.Trim & "|\t|" & sMonto1.Trim
                             sXMLPIE = sXMLPIE & "|\t|" & sMes2.Trim & "|\t|" & sMonto2.Trim & "|\t|" & sMes3.Trim & "|\t|" & sMonto3.Trim
+                            sXMLPIE = sXMLPIE & "|\t|" & sCntMeses.Trim & "|\t|" & sIntPagMin.Trim & "|\t|" & sComPagMin.Trim
                             ErrorLog("sXMLPIE=" & sXMLPIE)
 
 
@@ -10144,15 +10138,11 @@ Public Class Service
     'Cortar datos de movimientos de tarjetas asociadas.
     'CORTAR LAS COLUMNAS DE LOS MOVIMIENTOS
     Private Function Cortar_Movimientos_Asociada(ByVal sDataTramaMOV As String, ByVal lTotalRegistros As Long) As String
-
-
         'CAMPOS DE MOVIMIENTOS
         Dim Fecha_mov_mc As String = ""
         Dim Descripcion_Mov_Estable_mc As String = ""
         Dim sMonto_mc As String = ""
         Dim dMonto_mc As Double = 0
-
-
 
         'Data Retornar Movimientos
         Dim sDATA_MOV_RETORNO_MC As String = ""
@@ -10163,7 +10153,6 @@ Public Class Service
         Dim lCon3 As Long = 49 'Pos Monto
 
         For lFila = 1 To lTotalRegistros
-
             'Limpiar Variables.
             Fecha_mov_mc = ""
             Descripcion_Mov_Estable_mc = ""
@@ -13582,9 +13571,7 @@ Public Class Service
 
 
     Sub Agregar_Movimiento(ByVal oMovimiento As Movimiento)
-
         _Detalle_Movimientos.Add(oMovimiento)
-
     End Sub
 
     Class Movimiento
