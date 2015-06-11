@@ -48,6 +48,10 @@
     <OptionInfer>On</OptionInfer>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Interop.MQCOMLib">
+      <HintPath>..\RipleyMaticNET\Bin\Interop.MQCOMLib.dll</HintPath>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Deployment" />
@@ -72,6 +76,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Constantes.vb" />
+    <Compile Include="EstadosCuenta.vb" />
     <Compile Include="Form1.vb">
       <SubType>Form</SubType>
     </Compile>
@@ -81,6 +86,7 @@
     </Compile>
     <Compile Include="Funciones.vb" />
     <Compile Include="Log.vb" />
+    <Compile Include="Movimientos.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="My Project\Application.Designer.vb">
       <AutoGen>True</AutoGen>
