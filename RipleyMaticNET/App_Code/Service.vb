@@ -14901,7 +14901,6 @@ Public Class Service
                                         ByVal numeroTarjeta As String, _
                                         ByVal nombreCliente As String) As Response
         Dim respuesta As New Response
-        Dim loginService As New LoginService.loginService
         Dim mensaje As String = String.Empty
         Dim detalle As String = String.Empty
         Dim label As String = String.Empty
@@ -14910,6 +14909,10 @@ Public Class Service
         Dim resultadoCorreo As String = String.Empty
         Dim listaEmail As New List(Of String)
         Dim claveValida As Integer = 0
+
+        Dim loginService As New LoginService.loginService
+        loginService.Url = ReadAppConfig("LoginService.loginService")
+        ErrorLog("ValidarLoginUrl=" & loginService.Url)
 
         Try
             ErrorLog("ValidarLoginService")
@@ -14920,7 +14923,9 @@ Public Class Service
                 ErrorLog("numeroDocumento=" & numeroDocumento)
                 ErrorLog("clave=" & clave)
                 ErrorLog("email=" & email)
+
                 resultado = loginService.executeTransfer(canal, tipoDocumento, numeroDocumento, clave, email, mensaje, detalle, label, nivel)
+
                 ErrorLog("resultado=" & resultado)
                 ErrorLog("mensaje=" & mensaje)
                 ErrorLog("detalle=" & detalle)
