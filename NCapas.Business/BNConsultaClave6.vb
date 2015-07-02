@@ -47,4 +47,14 @@ Public Class BNConsultaClave6
         End Try
         Return respuesta
     End Function
+
+    Public Function CountClientesByNroTarjeta(ByVal nroTarjeta As String) As Integer
+        Dim respuesta As Integer = 0
+        Try
+            respuesta = DAConsultaClave6.Instancia.CountClientesByNroTarjeta(nroTarjeta)
+        Catch ex As Exception
+            ErrorLog("Error en ValidarClave = " & ex.Message)
+        End Try
+        Return respuesta
+    End Function
 End Class

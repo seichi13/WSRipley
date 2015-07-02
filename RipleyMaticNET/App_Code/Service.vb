@@ -12649,18 +12649,14 @@ Public Class Service
                                 ErrorLog("vg_RSAT_FecBaj = " & vg_RSAT_FecBaj)
                                 ErrorLog("vg_RSAT_CodTitularAdicional = " & vg_RSAT_CodTitularAdicional)
 
-                                If Binn_Tarjeta = "96041" And VALIDAR_BLOQUEDO_TARJETA_RSAT(vg_RSAT_CodBloqueo) = False And vg_RSAT_Sitarj = "05" And vg_RSAT_FecBaj = "0001-01-01" And vg_RSAT_CodTitularAdicional = "TI" Then
+                                If (Binn_Tarjeta = "96041" Or Binn_Tarjeta = "54202" Or Binn_Tarjeta = "54207") And (vg_RSAT_CodTitularAdicional = "TI" Or vg_RSAT_CodTitularAdicional = "BE") And
+                                    VALIDAR_BLOQUEDO_TARJETA_RSAT(vg_RSAT_CodBloqueo) = False And vg_RSAT_Sitarj = "05" And vg_RSAT_FecBaj = "0001-01-01" Then
                                     bCondCli = True
-                                Else
-                                    If Binn_Tarjeta = "96041" And VALIDAR_BLOQUEDO_TARJETA_RSAT(vg_RSAT_CodBloqueo) = False And vg_RSAT_Sitarj = "05" And vg_RSAT_FecBaj = "0001-01-01" And vg_RSAT_CodTitularAdicional = "BE" Then
-                                        bCondCli = True
-                                    End If
                                 End If
 
                                 If bCondCli Then
                                     Exit For
                                 End If
-
                             Next iIndEle
 
                             ErrorLog("bCondCli=" & bCondCli)
@@ -14854,6 +14850,24 @@ Public Class Service
     End Function
 
 #End Region
+#End Region
+
+#Region "Clave 6"
+
+    <WebMethod(Description:="Validar por NroTarjeta, si un cliente puede acceder a la opción Generar Clave 6 de Ripleymático.")> _
+    Public Function PuedeGenerarClave6(ByVal nroTarjeta As String) As Boolean
+        Dim Respuesta As Boolean
+        Dim CountClientes As Integer
+
+        Try
+            CountClientes = BNConsultaClave6.Instancia.CountClientesByNroTarjeta(nroTarjeta)
+            Respuesta = (CountClientes > 0)
+        Catch ex As Exception
+            Respuesta = False
+        End Try
+        Return Respuesta
+    End Function
+
 #End Region
 
     ''' <summary>

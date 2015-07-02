@@ -110,4 +110,24 @@ Public Class DAConsultaClave6
         Return respuesta
     End Function
 
+    Public Function CountClientesByNroTarjeta(ByVal nroTarjeta As String) As Integer
+        Dim respuesta As Integer = 0
+        Dim sMensajeError_SQL As String = ""
+        Using oConexion As SqlConnection = DAConexion.Instancia.SQL_ConnectionOpen(DAConexion.Instancia.Get_CadenaConexion(), sMensajeError_SQL)
+            If oConexion.State = ConnectionState.Open Then
+                Using comando As SqlCommand = oConexion.CreateCommand()
+                    comando.CommandTimeout = 600
+                    comando.CommandType = CommandType.StoredProcedure
+                    comando.CommandText = "USP_Count_KIO_CLAVE6_CLIENTES_BY_NroTarjeta"
+                    comando.Parameters.AddWithValue("@NroTarjeta", nroTarjeta)
+                    Using reader As SqlClient.SqlDataReader = comando.ExecuteReader
+                        If reader.Read = True Then
+                            respuesta = reader.GetInt32(reader.GetOrdinal("COUNT"))
+                        End If
+                    End Using
+                End Using
+            End If
+        End Using
+        Return respuesta
+    End Function
 End Class
