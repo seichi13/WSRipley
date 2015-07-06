@@ -14402,12 +14402,12 @@ Public Class Service
                     Dim threadEnvioCorreo As New Thread(New ThreadStart(AddressOf envioData.EnviarEmailMasivoFisa))
                     listaEmail.Add(email)
                     envioData.Addresses = listaEmail
-                    envioData.Subject = "RIPLEY HOMEBANKING - Confirmación Clave"
+                    envioData.Subject = "Generación de Clave Internet"
 
                     Dim fecha As Date = DateTime.Now
                     Dim fechaActual As String = Format(fecha, "g")
 
-                    envioData.Body = "<p style='text-align:right;'>" & fechaActual & "</p><p style='text-align:left;'>Sr.(a). " & nombreCliente & "</p>" & Constantes.MensajeEmailClave6
+                    envioData.Body = "<p style='text-align:right;'>" & fechaActual & "</p><p style='text-align:left;'>Estimado(a) " & nombreCliente & "</p>" & Constantes.MensajeEmailClave6
                     Dim rutaTemporal As String = String.Format("{0}{1}{2}", System.Web.HttpContext.Current.Request.PhysicalApplicationPath, "Archivos\", "TYCHB.pdf")
                     ErrorLog("rutaTemporal de TYC= " & rutaTemporal)
                     Dim listaArchivo As New List(Of String)
@@ -14423,9 +14423,6 @@ Public Class Service
                 respuesta.Message = "La clave ingresada no es segura, por favor ingrese otra clave"
                 ErrorLog(respuesta.Message)
             End If
-
-
-
         Catch ex As Exception
             respuesta.Success = False
             respuesta.Message = "En estos momentos no podemos atenderle. Por favor inténtelo más tarde"
