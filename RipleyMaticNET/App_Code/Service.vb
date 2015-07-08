@@ -4338,7 +4338,7 @@ Public Class Service
                             Dim iCntMeses As Integer = 0
                             Dim dIntPagMin As Double = 0
                             Dim dComPagMin As Double = 0
-                            If Servidor = TServidor.RSAT And sPeriodoFinal >= ReadAppConfig("PeriodoAgrandarGlosa") Then
+                            If Servidor = TServidor.RSAT And ReadAppConfig("BoolAgrandarGlosa").Equals("true", StringComparison.OrdinalIgnoreCase) Then
                                 Integer.TryParse(Mid(sTrama, 861, 5), iCntMeses)
                                 Double.TryParse(Mid(sTrama, 866, 8), dIntPagMin)
                                 Double.TryParse(Mid(sTrama, 874, 8), dComPagMin)
@@ -4349,7 +4349,7 @@ Public Class Service
 
                             'MOVIMIENTOS
                             sDataMovAux = ""
-                            If Servidor = TServidor.RSAT And sPeriodoFinal >= ReadAppConfig("PeriodoAgrandarGlosa") Then
+                            If Servidor = TServidor.RSAT And ReadAppConfig("BoolAgrandarGlosa").Equals("true", StringComparison.OrdinalIgnoreCase) Then
                                 sDataMov = Mid(sTrama, 882, sTrama.Length)
                             Else
                                 sDataMov = Mid(sTrama, 861, sTrama.Length)
@@ -4366,7 +4366,7 @@ Public Class Service
                                         End If
                                         Incrementa = Incrementa + tamanioFilaDetalleAnt
                                     Next
-                                ElseIf sPeriodoFinal >= ReadAppConfig("PeriodoAgrandarGlosa") Then
+                                ElseIf ReadAppConfig("BoolAgrandarGlosa").Equals("true", StringComparison.OrdinalIgnoreCase) Then
                                     '10-03-2015 Ocultar para pase por partes
                                     tamanioFilaDetalle = 159
                                     For lFila = 1 To 7
@@ -4457,12 +4457,14 @@ Public Class Service
                             sXMLPIE = sXMLPIE & "|\t|" & sCuotaMes_Min.Trim & "|\t|" & sInteres_Min.Trim & "|\t|" & sComisionCargos_Min.Trim
                             sXMLPIE = sXMLPIE & "|\t|" & sPagoMinimoMes_Min.Trim & "|\t|" & sMes1.Trim & "|\t|" & sMonto1.Trim
                             sXMLPIE = sXMLPIE & "|\t|" & sMes2.Trim & "|\t|" & sMonto2.Trim & "|\t|" & sMes3.Trim & "|\t|" & sMonto3.Trim
-                            sXMLPIE = sXMLPIE & "|\t|" & sCntMeses.Trim & "|\t|" & sIntPagMin.Trim & "|\t|" & sComPagMin.Trim
+                            sXMLPIE = sXMLPIE & "|\t|" & sCntMeses.Trim & "|\t|" & sIntPagMin.Trim & "|\t|" & sComPagMin.Trim & "|\t|"
+                            sXMLPIE = sXMLPIE & IIf(Servidor = TServidor.RSAT And ReadAppConfig("BoolAgrandarGlosa").Equals("true", StringComparison.OrdinalIgnoreCase), "1", "0")
+
                             ErrorLog("sXMLPIE=" & sXMLPIE)
                         Else
                             'EVALUAR LA SEGUNDA CALL SOLO MOVIMIENTOS CONTADOR DE LLAMADAS
                             sDataMovAux = ""
-                            If Servidor = TServidor.RSAT And sPeriodoFinal >= ReadAppConfig("PeriodoAgrandarGlosa") Then
+                            If Servidor = TServidor.RSAT And ReadAppConfig("BoolAgrandarGlosa").Equals("true", StringComparison.OrdinalIgnoreCase) Then
                                 sDataMov = Mid(sTrama, 882, sTrama.Length)
                             Else
                                 sDataMov = Mid(sTrama, 861, sTrama.Length)
@@ -4479,7 +4481,7 @@ Public Class Service
                                         End If
                                         Incrementa = Incrementa + tamanioFilaDetalleAnt
                                     Next
-                                ElseIf sPeriodoFinal >= ReadAppConfig("PeriodoAgrandarGlosa") Then
+                                ElseIf ReadAppConfig("BoolAgrandarGlosa").Equals("true", StringComparison.OrdinalIgnoreCase) Then
                                     '10-03-2015 Ocultar para pase por partes
                                     tamanioFilaDetalle = 159
                                     For lFila = 1 To 7
@@ -6741,7 +6743,7 @@ Public Class Service
                 sFechaProceso = Mid(sRegistro, 12, 11)
                 sNroTicket = Mid(sRegistro, 23, 6)
 
-                If Servidor = TServidor.RSAT And sPeriodoFinal >= ReadAppConfig("PeriodoAgrandarGlosa") Then
+                If Servidor = TServidor.RSAT And ReadAppConfig("BoolAgrandarGlosa").Equals("true", StringComparison.OrdinalIgnoreCase) Then
                     sDescripcion = Mid(sRegistro, 29, 85)
                     sTA = Mid(sRegistro, 114, 1)
                     sMonto = Mid(sRegistro, 115, 9)
