@@ -2083,7 +2083,7 @@ Public Class Service
     'Movimientos CLASICA
     <WebMethod(Description:="Consulta de Movimientos Tarjeta Clasica SICRON | RSAT")> _
     Public Function MOVIMIENTOS_CLASICA(ByVal sNroTarjeta As String, ByVal sNroCuenta As String, ByVal sDATA_MONITOR_KIOSCO As String, ByVal Servidor As TServidor, ByVal sMigrado As String) As String
-
+        ErrorLog("MOVIMIENTOS_CLASICA(" + sNroTarjeta + "," + sNroCuenta + "," + sDATA_MONITOR_KIOSCO + "," + Servidor.ToString() + "," + sMigrado + ")")
         Dim Respuesta As String
         Respuesta = String.Empty
 
