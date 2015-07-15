@@ -142,6 +142,7 @@ Public Class EnvioData
                         BNConsultaClave6.Instancia.UpdateConsultaClave6(consultaClave6)
                     Catch ex As Exception
                         ErrorLog("No se envio de Correo Correctamente a " & address)
+                        ErrorLog("Error Exception= " & ex.Message)
                         consultaClave6.Nro_Doc = NumeroDocumento
                         consultaClave6.Email = address
                         consultaClave6.Envio = False
