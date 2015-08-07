@@ -14504,16 +14504,26 @@ Public Class Service
     <WebMethod(Description:="Validar Dni")> _
     Public Function VALIDAR_DNI(ByVal idTipoTarjeta As String, ByVal tipoDocumento As String, ByVal numeroDocumento As String, ByVal dataMonitor As String) As String
         Dim respuesta As String = String.Empty
+        Dim aDataMonitor As String() = Split(dataMonitor, "|\t|", , CompareMethod.Text)
+        Dim sCodigoKiosko As String
+        Dim sucursal As Sucursal
         Dim idTipoTarjetaInt = Convert.ToInt32(idTipoTarjeta)
         Dim tipoDocumentoInt = Convert.ToInt32(tipoDocumento)
+
         Try
+            sCodigoKiosko = aDataMonitor(4)
+            sucursal = BuscarSucursal(sCodigoKiosko)
+            If VerificarHorario(sucursal, "ValidaCliente", respuesta) = False Then
+                Return "ERROR:" + respuesta
+            End If
+
             ErrorLog("Entro al método VALIDAR_DNI(" & idTipoTarjetaInt & "," & tipoDocumentoInt & "," & numeroDocumento & "," & dataMonitor & ")")
             Dim metodoTipoDocumento As New MetodoTipoDocumento
             metodoTipoDocumento = BuscarMetodoPorDocumentoYTarjeta(tipoDocumentoInt, idTipoTarjetaInt)
             respuesta = LLamarMetodoParaValidarDni(metodoTipoDocumento.Metodo, numeroDocumento, dataMonitor, idTipoTarjetaInt, tipoDocumentoInt)
             ErrorLog("Respuesta de método VALIDAR_DNI = " & respuesta)
         Catch ex As Exception
-            respuesta = "Hubo error en llamada a método VALIDAR_DNI " & ex.Message
+            respuesta = "ERROR:Hubo error en llamada a método VALIDAR_DNI " & ex.Message
         End Try
 
         Return respuesta
