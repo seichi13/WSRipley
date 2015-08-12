@@ -12480,7 +12480,7 @@ Public Class Service
 
                                 '<INI TCK-563699-01 DHERRERA 20-03-2014>
                                 'If bCondCli Then
-                                If bCondCli = True And sNroTarjeta.Substring(6, 3) <> "761" Then
+                                If bCondCli = True Then
                                     '<FIN TCK-563699-01 DHERRERA 20-03-2014>
                                     If getTipProducto_AbiertaRSAT(sNroTarjeta.Substring(0, 6)).ToString = TipProducto Then
 
