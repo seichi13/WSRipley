@@ -475,7 +475,7 @@ Public Class Service
                     End If
 
                 Case "01" 'RSAT
-                    Respuesta = VALIDAR_DNI_CLASICA_RSAT("C", sNroDNI, sDATA_MONITOR_KIOSCO, Nro_Contrato, Tipo_Tarjeta_Ofertas, sDataSuperEfectivoSEF)
+                    Respuesta = VALIDAR_DNI_CLASICA_RSAT(sIdTipoTarjeta, "C", sNroDNI, sDATA_MONITOR_KIOSCO, Nro_Contrato, Tipo_Tarjeta_Ofertas, sDataSuperEfectivoSEF)
                     ErrorLog("Respuesta=" & Respuesta)
                     v_prioridad = "02"
 
@@ -12482,7 +12482,7 @@ Public Class Service
                                 'If bCondCli Then
                                 If bCondCli = True Then
                                     '<FIN TCK-563699-01 DHERRERA 20-03-2014>
-                                    If getTipProducto_AbiertaRSAT(sNroTarjeta.Substring(0, 6)).ToString = TipProducto Then
+                                    If FUN_BUSCAR_TIPO_TARJETA(sNroTarjeta.Substring(0, 6)).ToString = TipProducto Then
 
                                         If TipDocumento = "C" Then 'DNI
                                             sTipoDocumento = "1"
@@ -12551,7 +12551,8 @@ Public Class Service
 
     End Function
 
-    Private Function VALIDAR_DNI_CLASICA_RSAT(ByVal TipDocumento As String, _
+    Private Function VALIDAR_DNI_CLASICA_RSAT(ByVal TipProducto As String, _
+                                               ByVal TipDocumento As String, _
                                                ByVal NroDocumento As String, _
                                                ByVal sDATA_MONITOR_KIOSCO As String, _
                                                ByRef Nro_Contrato As String, _
@@ -12643,7 +12644,7 @@ Public Class Service
                                 vg_RSAT_CodTitularAdicional = Mid(sRespuesta, 261 + iLonBucle * (iIndEle - 1), 2)
                                 sNroTarjeta = Mid(sRespuesta, 275 + iLonBucle * (iIndEle - 1), 22)
                                 vg_RSAT_CodBloqueo = Mid(sRespuesta, 297 + iLonBucle * (iIndEle - 1), 2)
-                                Binn_Tarjeta = sNroTarjeta.Substring(0, 5)
+                                Binn_Tarjeta = sNroTarjeta.Substring(0, 6)
 
                                 ErrorLog("Binn_Tarjeta = " & Binn_Tarjeta)
                                 ErrorLog("vg_RSAT_CodBloqueo = " & vg_RSAT_CodBloqueo)
@@ -12651,7 +12652,7 @@ Public Class Service
                                 ErrorLog("vg_RSAT_FecBaj = " & vg_RSAT_FecBaj)
                                 ErrorLog("vg_RSAT_CodTitularAdicional = " & vg_RSAT_CodTitularAdicional)
 
-                                If (Binn_Tarjeta = "96041" Or Binn_Tarjeta = "54202" Or Binn_Tarjeta = "54207") And (vg_RSAT_CodTitularAdicional = "TI" Or vg_RSAT_CodTitularAdicional = "BE") And
+                                If FUN_BUSCAR_TIPO_TARJETA(Binn_Tarjeta).ToString = TipProducto And (vg_RSAT_CodTitularAdicional = "TI" Or vg_RSAT_CodTitularAdicional = "BE") And
                                     VALIDAR_BLOQUEDO_TARJETA_RSAT(vg_RSAT_CodBloqueo) = False And vg_RSAT_Sitarj = "05" And vg_RSAT_FecBaj = "0001-01-01" Then
                                     bCondCli = True
                                 End If
@@ -12672,7 +12673,7 @@ Public Class Service
                                 sDataSuperEfectivo = MOSTRAR_SUPEREFECTIVO_SEF("1", TipDocumento.Trim, NroDocumento.Trim)
                                 sRespuesta = sNroTarjeta.Trim & "|\t|" & NroDocumento.Trim & "|\t|" & sCliente.Trim & "|\t|" & sFechaNac.Trim & "|\t|" & sTipoProducto.Trim & "|\t|" & MOSTRAR_SUPEREFECTIVO(sNroCuenta.Trim, sNroDocumento.Trim, TServidor.RSAT) & "|\t|" & sNroCuenta.Trim
                             Else
-                                sRespuesta = "ERROR:Servicio no disponible."
+                                sRespuesta = "ERROR: DNI no encontrado"
                             End If
                         Else
                             sRespuesta = "ERROR: DNI no encontrado"
