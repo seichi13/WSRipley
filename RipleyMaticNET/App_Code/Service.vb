@@ -12470,20 +12470,15 @@ Public Class Service
                                     Exit For
                                 End If
 
-                                If VALIDAR_BLOQUEDO_TARJETA_RSAT(vg_RSAT_CodBloqueo) = False And vg_RSAT_Sitarj = "05" And vg_RSAT_FecBaj = "0001-01-01" And vg_RSAT_CodTitularAdicional = "TI" Then
+                                If VALIDAR_BLOQUEDO_TARJETA_RSAT(vg_RSAT_CodBloqueo) = False And vg_RSAT_Sitarj = "05" And vg_RSAT_FecBaj = "0001-01-01" And (vg_RSAT_CodTitularAdicional = "TI" Or vg_RSAT_CodTitularAdicional = "BE") Then
                                     bCondCli = True
-                                Else
-                                    If VALIDAR_BLOQUEDO_TARJETA_RSAT(vg_RSAT_CodBloqueo) = False And vg_RSAT_Sitarj = "05" And vg_RSAT_FecBaj = "0001-01-01" And vg_RSAT_CodTitularAdicional = "BE" Then
-                                        bCondCli = True
-                                    End If
                                 End If
 
                                 '<INI TCK-563699-01 DHERRERA 20-03-2014>
                                 'If bCondCli Then
                                 If bCondCli = True Then
                                     '<FIN TCK-563699-01 DHERRERA 20-03-2014>
-                                    If FUN_BUSCAR_TIPO_TARJETA(sNroTarjeta.Substring(0, 6)).ToString = TipProducto Then
-
+                                    If getTipProducto_AbiertaRSAT(sNroTarjeta.Substring(0, 6)).ToString = TipProducto Then
                                         If TipDocumento = "C" Then 'DNI
                                             sTipoDocumento = "1"
                                         Else
@@ -12500,25 +12495,14 @@ Public Class Service
                                     If iIndEle = int_cont Then
                                         Return sXMLRespuesta
                                     End If
-
-                                Else
-
-                                    If iIndEle = int_cont Then
-                                        Return "ERROR:Servicio no disponible."
-                                    End If
-
+                                ElseIf iIndEle = int_cont Then
+                                    Return "ERROR:Servicio no disponible."
                                 End If
-
-
                             Next iIndEle
-
-
-
                         Else
                             sRespuesta = "ERROR: DNI no encontrado"
                         End If
                     End If
-
                 Else
                     'Sino Encontro DNI en RSAT
                     sRespuesta = "ERROR: DNI no encontrado"
@@ -12526,16 +12510,11 @@ Public Class Service
             Else
                 sRespuesta = "ERROR: DNI no encontrado"
             End If
-
         Catch ex As Exception
             sRespuesta = "ERROR: Servicio no Disponible"
         End Try
 
-
-
-
         Return sRespuesta
-
     End Function
 
 
@@ -12652,7 +12631,7 @@ Public Class Service
                                 ErrorLog("vg_RSAT_FecBaj = " & vg_RSAT_FecBaj)
                                 ErrorLog("vg_RSAT_CodTitularAdicional = " & vg_RSAT_CodTitularAdicional)
 
-                                If FUN_BUSCAR_TIPO_TARJETA(Binn_Tarjeta).ToString = TipProducto And (vg_RSAT_CodTitularAdicional = "TI" Or vg_RSAT_CodTitularAdicional = "BE") And
+                                If getTipProducto_AbiertaRSAT(Binn_Tarjeta).ToString = TipProducto And (vg_RSAT_CodTitularAdicional = "TI" Or vg_RSAT_CodTitularAdicional = "BE") And
                                     VALIDAR_BLOQUEDO_TARJETA_RSAT(vg_RSAT_CodBloqueo) = False And vg_RSAT_Sitarj = "05" And vg_RSAT_FecBaj = "0001-01-01" Then
                                     bCondCli = True
                                 End If
