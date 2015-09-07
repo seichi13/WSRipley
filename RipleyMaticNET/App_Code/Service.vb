@@ -4338,7 +4338,7 @@ Public Class Service
                             Dim iCntMeses As Integer = 0
                             Dim dIntPagMin As Double = 0
                             Dim dComPagMin As Double = 0
-                            If Servidor = TServidor.RSAT And ReadAppConfig("BoolAgrandarGlosa").Equals("true", StringComparison.OrdinalIgnoreCase) Then
+                            If Servidor = TServidor.RSAT And sPeriodoFinal >= ReadAppConfig("PeriodoAgrandarGlosa") Then
                                 Integer.TryParse(Mid(sTrama, 861, 5), iCntMeses)
                                 Double.TryParse(Mid(sTrama, 866, 8), dIntPagMin)
                                 Double.TryParse(Mid(sTrama, 874, 8), dComPagMin)
@@ -4349,7 +4349,7 @@ Public Class Service
 
                             'MOVIMIENTOS
                             sDataMovAux = ""
-                            If Servidor = TServidor.RSAT And ReadAppConfig("BoolAgrandarGlosa").Equals("true", StringComparison.OrdinalIgnoreCase) Then
+                            If Servidor = TServidor.RSAT And sPeriodoFinal >= ReadAppConfig("PeriodoAgrandarGlosa") Then
                                 sDataMov = Mid(sTrama, 882, sTrama.Length)
                             Else
                                 sDataMov = Mid(sTrama, 861, sTrama.Length)
@@ -4366,7 +4366,7 @@ Public Class Service
                                         End If
                                         Incrementa = Incrementa + tamanioFilaDetalleAnt
                                     Next
-                                ElseIf ReadAppConfig("BoolAgrandarGlosa").Equals("true", StringComparison.OrdinalIgnoreCase) Then
+                                ElseIf sPeriodoFinal >= ReadAppConfig("PeriodoAgrandarGlosa") Then
                                     '10-03-2015 Ocultar para pase por partes
                                     tamanioFilaDetalle = 159
                                     For lFila = 1 To 7
@@ -4458,13 +4458,13 @@ Public Class Service
                             sXMLPIE = sXMLPIE & "|\t|" & sPagoMinimoMes_Min.Trim & "|\t|" & sMes1.Trim & "|\t|" & sMonto1.Trim
                             sXMLPIE = sXMLPIE & "|\t|" & sMes2.Trim & "|\t|" & sMonto2.Trim & "|\t|" & sMes3.Trim & "|\t|" & sMonto3.Trim
                             sXMLPIE = sXMLPIE & "|\t|" & sCntMeses.Trim & "|\t|" & sIntPagMin.Trim & "|\t|" & sComPagMin.Trim & "|\t|"
-                            sXMLPIE = sXMLPIE & IIf(Servidor = TServidor.RSAT And ReadAppConfig("BoolAgrandarGlosa").Equals("true", StringComparison.OrdinalIgnoreCase), "1", "0")
+                            sXMLPIE = sXMLPIE & IIf(Servidor = TServidor.RSAT And sPeriodoFinal >= ReadAppConfig("PeriodoAgrandarGlosa"), "1", "0")
 
                             ErrorLog("sXMLPIE=" & sXMLPIE)
                         Else
                             'EVALUAR LA SEGUNDA CALL SOLO MOVIMIENTOS CONTADOR DE LLAMADAS
                             sDataMovAux = ""
-                            If Servidor = TServidor.RSAT And ReadAppConfig("BoolAgrandarGlosa").Equals("true", StringComparison.OrdinalIgnoreCase) Then
+                            If Servidor = TServidor.RSAT And sPeriodoFinal >= ReadAppConfig("PeriodoAgrandarGlosa") Then
                                 sDataMov = Mid(sTrama, 882, sTrama.Length)
                             Else
                                 sDataMov = Mid(sTrama, 861, sTrama.Length)
@@ -4481,7 +4481,7 @@ Public Class Service
                                         End If
                                         Incrementa = Incrementa + tamanioFilaDetalleAnt
                                     Next
-                                ElseIf ReadAppConfig("BoolAgrandarGlosa").Equals("true", StringComparison.OrdinalIgnoreCase) Then
+                                ElseIf sPeriodoFinal >= ReadAppConfig("PeriodoAgrandarGlosa") Then
                                     '10-03-2015 Ocultar para pase por partes
                                     tamanioFilaDetalle = 159
                                     For lFila = 1 To 7
@@ -6312,20 +6312,15 @@ Public Class Service
     'CONSULTA DE PUNTOS
     <WebMethod(Description:="Consulta de Ripley Puntos.")> _
     Public Function CONSULTA_RIPLEY_PUNTOS(ByVal sTipoTarjeta As String, ByVal sNroTarjeta As String, ByVal sNRO_CUENTA As String, ByVal sDATA_MONITOR_KIOSCO As String, ByVal Servidor As TServidor) As String
-
         'C = CLASICA
         'A = ASOCIADA
-
         Dim conConexion_ripley As OracleConnection
 
         Try
             conConexion_ripley = New OracleConnection(mCadenaConexion_ORA_PUNTOS)
-
             If Not conConexion_ripley Is Nothing Then
                 conConexion_ripley.Open()
-
                 If conConexion_ripley.State = ConnectionState.Open Then
-
                     'LLAMAR AL PROCEDIMIENTO RIPEY PUNTOS
                     Dim cmd_ora_ As New OracleCommand
                     Dim param1_ As New OracleParameter
@@ -6344,7 +6339,6 @@ Public Class Service
                     Dim sPuntosVencidos As String = ""
                     Dim sPuntosXvencer As String = ""
 
-
                     cmd_ora_.Connection = conConexion_ripley
                     cmd_ora_.CommandText = "PKG_RIPLEY_PUNTOS_EPUS.PRC_PUNTOS_RIPLEYMATICO"
                     cmd_ora_.CommandType = CommandType.StoredProcedure
@@ -6356,60 +6350,50 @@ Public Class Service
                     param1_.Value = sNroTarjeta.Trim
                     cmd_ora_.Parameters.Add(param1_)
 
-
                     'OBTENER FECHA FINAL DE FACTURACION
                     If sTipoTarjeta.Trim.ToUpper = "C" Then
-
                         Select Case Servidor
                             Case TServidor.SICRON
                                 sFecha_Pago = FUN_BUSCAR_FECHA_CORTE_CLASICA_SICRON(sNRO_CUENTA.Trim)
                             Case TServidor.RSAT
                                 sFecha_Pago = FUN_BUSCAR_FECHA_CORTE_CLASICA_RSAT(sNroTarjeta.Trim, sNRO_CUENTA.Trim)
                         End Select
-
                     Else
                         sFecha_Pago = FUN_BUSCAR_FECHA_CORTE_ASOCIADA(sNroTarjeta.Trim)
                     End If
-
+                    Log.ErrorLog("Function CONSULTA_RIPLEY_PUNTOS: sFecha_Pago = " & sFecha_Pago)
 
                     If sFecha_Pago.Trim.Length > 0 Then
-
                         param2_.ParameterName = "vFechaCorte"
                         param2_.OracleType = OracleType.DateTime
                         param2_.Direction = ParameterDirection.Input
                         param2_.Value = sFecha_Pago.Trim
                         cmd_ora_.Parameters.Add(param2_)
 
-
                         param3_.ParameterName = "nPtosCons"
                         param3_.OracleType = OracleType.Double
                         param3_.Direction = ParameterDirection.Output
                         cmd_ora_.Parameters.Add(param3_)
-
 
                         param4_.ParameterName = "nPtosAcum"
                         param4_.OracleType = OracleType.Double
                         param4_.Direction = ParameterDirection.Output
                         cmd_ora_.Parameters.Add(param4_)
 
-
                         param5_.ParameterName = "nPtoVcdo"
                         param5_.OracleType = OracleType.Double
                         param5_.Direction = ParameterDirection.Output
                         cmd_ora_.Parameters.Add(param5_)
-
 
                         param6_.ParameterName = "nPtosSaldoAnt"
                         param6_.OracleType = OracleType.Double
                         param6_.Direction = ParameterDirection.Output
                         cmd_ora_.Parameters.Add(param6_)
 
-
                         param7_.ParameterName = "nPtosxVencer"
                         param7_.OracleType = OracleType.Double
                         param7_.Direction = ParameterDirection.Output
                         cmd_ora_.Parameters.Add(param7_)
-
 
                         param8_.ParameterName = "vFechxVencer"
                         param8_.OracleType = OracleType.VarChar
@@ -6417,44 +6401,38 @@ Public Class Service
                         param8_.Direction = ParameterDirection.Output
                         cmd_ora_.Parameters.Add(param8_)
 
-
                         cmd_ora_.ExecuteNonQuery()
 
-                        sPuntosGanados = cmd_ora_.Parameters("nptosacum").Value.ToString
+                        sPuntosGanados = cmd_ora_.Parameters("nPtosAcum").Value.ToString
                         sPuntosCanjeados = cmd_ora_.Parameters("nPtosCons").Value.ToString
                         sPuntosVencidos = cmd_ora_.Parameters("nPtoVcdo").Value.ToString
-                        sPuntosXvencer = cmd_ora_.Parameters("nptosxvencer").Value.ToString
+                        sPuntosXvencer = cmd_ora_.Parameters("nPtosxVencer").Value.ToString
+                        Log.ErrorLog("Function CONSULTA_RIPLEY_PUNTOS: sPuntosGanados = " & sPuntosGanados)
+                        Log.ErrorLog("Function CONSULTA_RIPLEY_PUNTOS: sPuntosCanjeados = " & sPuntosCanjeados)
+                        Log.ErrorLog("Function CONSULTA_RIPLEY_PUNTOS: sPuntosVencidos = " & sPuntosVencidos)
+                        Log.ErrorLog("Function CONSULTA_RIPLEY_PUNTOS: sPuntosXvencer = " & sPuntosXvencer)
+                        Log.ErrorLog("Function CONSULTA_RIPLEY_PUNTOS: nPtosSaldoAnt = " & cmd_ora_.Parameters("nPtosSaldoAnt").Value.ToString)
+                        Log.ErrorLog("Function CONSULTA_RIPLEY_PUNTOS: vFechxVencer = " & cmd_ora_.Parameters("vFechxVencer").Value.ToString)
 
                         sResultado_ORA = ""
                         sResultado_ORA = sPuntosGanados.Trim & "|\t|" & sPuntosCanjeados.Trim & "|\t|" & sPuntosVencidos.Trim & "|\t|" & sPuntosXvencer.Trim & "|\t|" & FUN_PUNTOS_ACTIVOS(sNroTarjeta.Trim) 'PUNTOS ACTIVOS
 
-
-
                         Dim sFechaKiosco As String = DateTime.Now.Day.ToString("00").Trim + "/" + DateTime.Now.Month.ToString("00").Trim + "/" + DateTime.Now.Year.ToString("0000").Trim
                         Dim sHoraKiosco As String = DateTime.Now.ToString("HH:mm:ss")
                         Dim sNOperacion As String = GET_NUMERO_OPERACION()
-
-
                         sResultado_ORA = sFechaKiosco.Trim & "|\t|" & sHoraKiosco.Trim & "|\t|" & sNOperacion.Trim & "|\t|" & sResultado_ORA.Trim
-
-
                     End If
 
                     cmd_ora_.Dispose()
                     cmd_ora_ = Nothing
-
                     conConexion_ripley.Close()
                     conConexion_ripley = Nothing
-
                 End If
-
             Else
-
                 sResultado_ORA = "ERROR:NODATA"
-
             End If
-
         Catch ex As Exception
+            Log.ErrorLog("Function CONSULTA_RIPLEY_PUNTOS: Exception = " & ex.Message)
             sResultado_ORA = "ERROR:NODATA"
         End Try
 
@@ -6476,14 +6454,10 @@ Public Class Service
         Dim sCanalAtencion As String = "01" 'RipleyMatico
         Dim sEstadoCuenta As String = ""
 
-
-
         If sDATA_MONITOR_KIOSCO.Length > 0 Then
-
             'RECORRER ARREGLO
             Dim ADATA_MONITOR As Array
             ADATA_MONITOR = Split(sDATA_MONITOR_KIOSCO, "|\t|", , CompareMethod.Text)
-
 
             sNroCuentax = ADATA_MONITOR(0)
             sNroTarjetax = ADATA_MONITOR(1)
@@ -6518,7 +6492,6 @@ Public Class Service
                 sDataMonitor = FECHA_TX & HORA_TX & sNroCuentax & sNroTarjetax & sNombreCliente & sModoEntrada & sCanalAtencion & sSaldoDisponible & sTotalDeuda & sIDSucursal & sIDTerminal & sEstadoCuenta & sRespuestaServidor & sCodigoTransaccion
 
                 'ENVIAR_MONITOR(sDataMonitor)
-
             Else
                 'ENVIAR_MONITOR
 
@@ -6529,14 +6502,11 @@ Public Class Service
                 sDataMonitor = FECHA_TX & HORA_TX & sNroCuentax & sNroTarjetax & sNombreCliente & sModoEntrada & sCanalAtencion & sSaldoDisponible & sTotalDeuda & sIDSucursal & sIDTerminal & sEstadoCuenta & sRespuestaServidor & sCodigoTransaccion
 
                 'ENVIAR_MONITOR(sDataMonitor)
-
             End If
-
         End If
 
+        Log.ErrorLog(sResultado_ORA)
         Return sResultado_ORA
-
-
     End Function
 
 
@@ -6743,7 +6713,7 @@ Public Class Service
                 sFechaProceso = Mid(sRegistro, 12, 11)
                 sNroTicket = Mid(sRegistro, 23, 6)
 
-                If Servidor = TServidor.RSAT And ReadAppConfig("BoolAgrandarGlosa").Equals("true", StringComparison.OrdinalIgnoreCase) Then
+                If Servidor = TServidor.RSAT And sPeriodoFinal >= ReadAppConfig("PeriodoAgrandarGlosa") Then
                     sDescripcion = Mid(sRegistro, 29, 85)
                     sTA = Mid(sRegistro, 114, 1)
                     sMonto = Mid(sRegistro, 115, 9)
