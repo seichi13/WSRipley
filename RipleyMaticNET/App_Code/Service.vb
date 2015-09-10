@@ -14835,13 +14835,16 @@ Public Class Service
 
     <WebMethod(Description:="Validar por NroTarjeta, si un cliente puede acceder a la opción Generar Clave 6 de Ripleymático.")> _
     Public Function PuedeGenerarClave6(ByVal nroTarjeta As String) As Boolean
+        Log.ErrorLog("PuedeGenerarClave6 Inicio")
         Dim Respuesta As Boolean
         Dim CountClientes As Integer
 
         Try
             CountClientes = BNConsultaClave6.Instancia.CountClientesByNroTarjeta(nroTarjeta)
+            Log.ErrorLog("PuedeGenerarClave6 CountClientes: " + CountClientes.ToString())
             Respuesta = (CountClientes > 0)
         Catch ex As Exception
+            Log.ErrorLog("PuedeGenerarClave6 Exception: " + ex.Message)
             Respuesta = False
         End Try
         Return Respuesta
