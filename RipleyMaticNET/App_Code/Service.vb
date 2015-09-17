@@ -12440,14 +12440,21 @@ Public Class Service
                                     Exit For
                                 End If
 
+                                ErrorLog("Function VALIDAR_DNI_ABIERTA_RSAT: vg_RSAT_CodBloqueo=" & vg_RSAT_CodBloqueo)
+                                ErrorLog("Function VALIDAR_DNI_ABIERTA_RSAT: vg_RSAT_Sitarj=" & vg_RSAT_Sitarj)
+                                ErrorLog("Function VALIDAR_DNI_ABIERTA_RSAT: vg_RSAT_FecBaj=" & vg_RSAT_FecBaj)
+                                ErrorLog("Function VALIDAR_DNI_ABIERTA_RSAT: vg_RSAT_CodTitularAdicional=" & vg_RSAT_CodTitularAdicional)
                                 If VALIDAR_BLOQUEDO_TARJETA_RSAT(vg_RSAT_CodBloqueo) = False And vg_RSAT_Sitarj = "05" And vg_RSAT_FecBaj = "0001-01-01" And (vg_RSAT_CodTitularAdicional = "TI" Or vg_RSAT_CodTitularAdicional = "BE") Then
                                     bCondCli = True
                                 End If
+                                ErrorLog("Function VALIDAR_DNI_ABIERTA_RSAT: bCondCli=" & bCondCli)
 
                                 '<INI TCK-563699-01 DHERRERA 20-03-2014>
                                 'If bCondCli Then
                                 If bCondCli = True Then
                                     '<FIN TCK-563699-01 DHERRERA 20-03-2014>
+                                    ErrorLog("Function VALIDAR_DNI_ABIERTA_RSAT: sNroTarjeta.Substring(0, 6)=" & sNroTarjeta.Substring(0, 6))
+                                    ErrorLog("Function VALIDAR_DNI_ABIERTA_RSAT: TipProducto=" & TipProducto)
                                     If getTipProducto_AbiertaRSAT(sNroTarjeta.Substring(0, 6)).ToString = TipProducto Then
                                         If TipDocumento = "C" Then 'DNI
                                             sTipoDocumento = "1"
