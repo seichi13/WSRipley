@@ -62,8 +62,6 @@ Public Class Log
 
         Catch ex As Exception
 
-            ErrorLog(mensaje)
-
         End Try
     End Sub
 End Class

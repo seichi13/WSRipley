@@ -45,6 +45,9 @@ Public Class DAConfiguracionKiosco
                                 config.Longitud_Tarjeta_Bin2 = rd_cod.GetInt32(rd_cod.GetOrdinal("LONGITUD_TARJETA_BIN2"))
                                 config.Posini_Bin2 = rd_cod.GetInt32(rd_cod.GetOrdinal("POSINI_BIN2"))
                                 config.Longitud_Bin_Bin2 = rd_cod.GetInt32(rd_cod.GetOrdinal("LONGITUD_BIN_BIN2"))
+
+                                config.Pin4Intentos = rd_cod.GetInt16(rd_cod.GetOrdinal("PIN4_INTENTOS"))
+                                config.Pin4HorasBloqueo = rd_cod.GetInt16(rd_cod.GetOrdinal("PIN4_HORAS_BLOQUEO"))
                             End If
                         End Using
                     End Using

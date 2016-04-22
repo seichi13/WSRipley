@@ -65,6 +65,7 @@
     <Import Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DAPin4TarjetaBloqueada.vb" />
     <Compile Include="DABRPFISA.vb" />
     <Compile Include="DAConexion.vb" />
     <Compile Include="DAConfiguracionKiosco.vb" />

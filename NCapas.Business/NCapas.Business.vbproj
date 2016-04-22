@@ -82,6 +82,7 @@
     <Compile Include="BNTipoTarjeta.vb" />
     <Compile Include="BN_Incremento_Linea.vb" />
     <Compile Include="BNSuperEfectivo.vb" />
+    <Compile Include="BNPin4TarjetaBloqueada.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="My Project\Application.Designer.vb">
       <AutoGen>True</AutoGen>

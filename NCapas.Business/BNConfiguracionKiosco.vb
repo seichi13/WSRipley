@@ -5,13 +5,7 @@ Public Class BNConfiguracionKiosco
     Inherits Singleton(Of BNConfiguracionKiosco)
 
     Public Function BuscarConfiguracionKioskoPorCodigoKiosco(ByVal sCodigoKiosko As String) As ConfiguracionKiosko
-        Dim config As New ConfiguracionKiosko
-        Try
-            config = DAConfiguracionKiosco.Instancia.BuscarConfiguracionKioskoPorCodigoKiosco(sCodigoKiosko)
-        Catch ex As Exception
-            config = New ConfiguracionKiosko
-        End Try
-        Return config
+        Return DAConfiguracionKiosco.Instancia.BuscarConfiguracionKioskoPorCodigoKiosco(sCodigoKiosko)
     End Function
 
     Public Function BuscarConfiguracionKioskoPorIP(ByVal sIP As String) As ConfiguracionKiosko

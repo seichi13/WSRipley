@@ -14839,6 +14839,121 @@ Public Class Service
 
 #End Region
 
+#Region "PIN4"
+
+    <WebMethod(Description:="Devuelve las llaves públicas del SixSecurity.")> _
+    Public Function GetKeysSixSecurity() As SixSecurityKeys
+        Log.ErrorLog("GetKeysSixSecurity Inicio")
+        Dim oSixSecurityKeys As New SixSecurityKeys
+
+        Try
+            oSixSecurityKeys.SessionId = "SessionId"
+            oSixSecurityKeys.KeySessionId = "KeySessionId"
+            oSixSecurityKeys.KeyPubChannel = "KeyPubChannel"
+            oSixSecurityKeys.Message = "Las llaves se obtuvieron exitosamente."
+            oSixSecurityKeys.Success = True
+        Catch ex As Exception
+            Log.ErrorLog("GetKeysSixSecurity Exception: " + ex.Message)
+
+            oSixSecurityKeys.Message = "Ocurrió un error al intentar obtener comunicarse a SixSecurity."
+            oSixSecurityKeys.Success = False
+        End Try
+
+        Log.ErrorLog("GetKeysSixSecurity Fin")
+        Return oSixSecurityKeys
+    End Function
+
+    <WebMethod(Description:="Retorna un valor indicando si la tarjeta está bloqueada.")> _
+    Public Function TarjetaEstaBloqueada(ByVal codigoKiosko As String, ByVal nroTarjeta As String) As EntityResultBool
+        Log.ErrorLog("TarjetaEstaBloqueada Inicio")
+        Dim oEntityResultBool As New EntityResultBool
+
+        Try
+            Dim oPin4TarjetaBloqueada As Pin4TarjetaBloqueada = BNPin4TarjetaBloqueada.Instancia.GetPin4TarjetaBloqueadaByNroTarjeta(nroTarjeta)
+            Dim oConfiguracionKiosko As ConfiguracionKiosko = BNConfiguracionKiosco.Instancia.BuscarConfiguracionKioskoPorCodigoKiosco(codigoKiosko)
+
+            If IsNothing(oPin4TarjetaBloqueada) Then
+                oPin4TarjetaBloqueada = New Pin4TarjetaBloqueada
+            ElseIf oConfiguracionKiosko.Pin4Intentos = 0 Or _
+                (oPin4TarjetaBloqueada.EstaBloqueada And oPin4TarjetaBloqueada.FechaBloqueo.AddHours(oConfiguracionKiosko.Pin4HorasBloqueo) < oPin4TarjetaBloqueada.FechaActual) Then
+
+                oPin4TarjetaBloqueada.NroIntentos = 0
+                oPin4TarjetaBloqueada.EstaBloqueada = False
+
+                BNPin4TarjetaBloqueada.Instancia.UpdatePin4TarjetaBloqueadaByNroTarjeta(oPin4TarjetaBloqueada)
+            End If
+
+            oEntityResultBool.Result = oPin4TarjetaBloqueada.EstaBloqueada
+            oEntityResultBool.Success = True
+        Catch ex As Exception
+            Log.ErrorLog("TarjetaEstaBloqueada Exception: " + ex.Message)
+
+            oEntityResultBool.Message = "Ocurrió un problema al intentar validar si la tarjeta se encuentra bloqueada."
+            oEntityResultBool.Success = False
+        End Try
+
+        Log.ErrorLog("TarjetaEstaBloqueada Fin")
+        Return oEntityResultBool
+    End Function
+
+    <WebMethod(Description:="Valida si el PIN4 corresponde al número de tarjeta enviada.")> _
+    Public Function ValidarPin4(ByVal codigoKiosko As String, ByVal nroTarjeta As String, ByVal pin As String, ByVal pan As String, ByVal canal As String, ByVal sessionId As String) As EntityResultBool
+        Log.ErrorLog("ValidarPin4 Inicio")
+        Dim esNueva As Boolean = False
+        Dim oEntityResultBool As New EntityResultBool
+
+        Try
+            Dim oPin4TarjetaBloqueada As Pin4TarjetaBloqueada = BNPin4TarjetaBloqueada.Instancia.GetPin4TarjetaBloqueadaByNroTarjeta(nroTarjeta)
+            Dim oConfiguracionKiosko As ConfiguracionKiosko = BNConfiguracionKiosco.Instancia.BuscarConfiguracionKioskoPorCodigoKiosco(codigoKiosko)
+
+            If IsNothing(oPin4TarjetaBloqueada) Then
+                esNueva = True
+                oPin4TarjetaBloqueada = New Pin4TarjetaBloqueada
+                oPin4TarjetaBloqueada.NroTarjeta = nroTarjeta
+            ElseIf oConfiguracionKiosko.Pin4Intentos = 0 Or _
+                (oPin4TarjetaBloqueada.EstaBloqueada And oPin4TarjetaBloqueada.FechaBloqueo.AddHours(oConfiguracionKiosko.Pin4HorasBloqueo) < oPin4TarjetaBloqueada.FechaActual) Then
+
+                oPin4TarjetaBloqueada.NroIntentos = 0
+                oPin4TarjetaBloqueada.EstaBloqueada = False
+            End If
+
+            If oPin4TarjetaBloqueada.EstaBloqueada Then
+                oEntityResultBool.Result = False
+                oEntityResultBool.Message = "La tarjeta se encuentra bloqueada por haber superado el número de intentos."
+                oEntityResultBool.Success = False
+            Else
+                Dim pinValido As Boolean = True
+                pinValido = False
+                If pinValido Then
+                    oPin4TarjetaBloqueada.NroIntentos = 0
+                    oPin4TarjetaBloqueada.EstaBloqueada = False
+                ElseIf oConfiguracionKiosko.Pin4Intentos > 0 Then
+                    oPin4TarjetaBloqueada.NroIntentos += 1
+                    oPin4TarjetaBloqueada.EstaBloqueada = (oPin4TarjetaBloqueada.NroIntentos >= oConfiguracionKiosko.Pin4Intentos)
+                End If
+
+                If esNueva Then
+                    BNPin4TarjetaBloqueada.Instancia.InsertPin4TarjetaBloqueadaByNroTarjeta(oPin4TarjetaBloqueada)
+                Else
+                    BNPin4TarjetaBloqueada.Instancia.UpdatePin4TarjetaBloqueadaByNroTarjeta(oPin4TarjetaBloqueada)
+                End If
+
+                oEntityResultBool.Result = pinValido
+                oEntityResultBool.Success = True
+            End If
+        Catch ex As Exception
+            Log.ErrorLog("ValidarPin4 Exception: " + ex.Message)
+
+            oEntityResultBool.Message = "Ocurrió un problema al intentar validar el PIN de 4 dígitos."
+            oEntityResultBool.Success = False
+        End Try
+
+        Log.ErrorLog("ValidarPin4 Fin")
+        Return oEntityResultBool
+    End Function
+
+#End Region
+
     ''' <summary>
     ''' Valida la fecha de desembolso, que sea una fecha válida y que sea mayor o igual a la actual
     ''' </summary>

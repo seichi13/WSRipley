@@ -69,6 +69,10 @@
     <Compile Include="ConsultaCambioProducto.vb" />
     <Compile Include="ConsultaClave6.vb" />
     <Compile Include="ConsultaLPDP.vb" />
+    <Compile Include="Pin4TarjetaBloqueada.vb" />
+    <Compile Include="EntityResultBool.vb" />
+    <Compile Include="EntityResult.vb" />
+    <Compile Include="SixSecurityKeys.vb" />
     <Compile Include="Factor.vb" />
     <Compile Include="IncrementoLinea.vb" />
     <Compile Include="Kiosco.vb" />
