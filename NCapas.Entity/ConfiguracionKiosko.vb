@@ -16,6 +16,7 @@ Public Class ConfiguracionKiosko
     Public Property Longitud_Bin_Bin2 As Integer
     Public Property Pin4Intentos As Short = 0
     Public Property Pin4HorasBloqueo As Short = 0
+    Public Property Pin4MensajeBloqueo As String = ""
 
     Public Property Codigo_Sucursal As String
     Public Property Codigo_Kiosko As String

@@ -14842,12 +14842,11 @@ Public Class Service
 #Region "PIN4"
 
     <WebMethod(Description:="Devuelve las llaves públicas del SixSecurity.")> _
-    Public Function GetKeysSixSecurity() As SixSecurityKeys
+    Public Function GetKeysSixSecurity(ByVal sessionId As String) As SixSecurityKeys
         Log.ErrorLog("GetKeysSixSecurity Inicio")
         Dim oSixSecurityKeys As New SixSecurityKeys
 
         Try
-            oSixSecurityKeys.SessionId = "SessionId"
             oSixSecurityKeys.KeySessionId = "KeySessionId"
             oSixSecurityKeys.KeyPubChannel = "KeyPubChannel"
             oSixSecurityKeys.Message = "Las llaves se obtuvieron exitosamente."
@@ -14884,6 +14883,7 @@ Public Class Service
             End If
 
             oEntityResultBool.Result = oPin4TarjetaBloqueada.EstaBloqueada
+            oEntityResultBool.Message = IIf(oPin4TarjetaBloqueada.EstaBloqueada, oConfiguracionKiosko.Pin4MensajeBloqueo, "")
             oEntityResultBool.Success = True
         Catch ex As Exception
             Log.ErrorLog("TarjetaEstaBloqueada Exception: " + ex.Message)
@@ -14919,7 +14919,7 @@ Public Class Service
 
             If oPin4TarjetaBloqueada.EstaBloqueada Then
                 oEntityResultBool.Result = False
-                oEntityResultBool.Message = "La tarjeta se encuentra bloqueada por haber superado el número de intentos."
+                oEntityResultBool.Message = oConfiguracionKiosko.Pin4MensajeBloqueo
                 oEntityResultBool.Success = False
             Else
                 Dim pinValido As Boolean = True

@@ -48,6 +48,7 @@ Public Class DAConfiguracionKiosco
 
                                 config.Pin4Intentos = rd_cod.GetInt16(rd_cod.GetOrdinal("PIN4_INTENTOS"))
                                 config.Pin4HorasBloqueo = rd_cod.GetInt16(rd_cod.GetOrdinal("PIN4_HORAS_BLOQUEO"))
+                                config.Pin4MensajeBloqueo = rd_cod.GetString(rd_cod.GetOrdinal("PIN4_MENSAJE_BLOQUEO"))
                             End If
                         End Using
                     End Using
