@@ -123,4 +123,8 @@
     Public Const OperacionDNI As String = "2"
     Public Const FechaCaducidadPopUpInvasivo As String = "20150430"
 #End Region
+
+#Region "PIN4"
+    Public Const PIN4_CANAL As String = "RM"
+#End Region
 End Class

@@ -11,6 +11,7 @@ Imports System.Text
 Imports MIRRCOM
 Imports Channel
 Imports Microsoft.VisualBasic
+'Imports TelematicoService
 
 '<INI>
 Imports MQCOMLib
@@ -14845,10 +14846,14 @@ Public Class Service
     Public Function GetKeysSixSecurity(ByVal sessionId As String) As SixSecurityKeys
         Log.ErrorLog("GetKeysSixSecurity Inicio")
         Dim oSixSecurityKeys As New SixSecurityKeys
+        Dim oDatos As TelematicoService.datos
+        Dim oTelematicoClient As New TelematicoService.TelematicoClient
 
         Try
-            oSixSecurityKeys.KeySessionId = "KeySessionId"
-            oSixSecurityKeys.KeyPubChannel = "KeyPubChannel"
+            oDatos = oTelematicoClient.keySession(sessionId, Constantes.PIN4_CANAL)
+            oSixSecurityKeys.SessionId = oDatos.sessionId
+            oSixSecurityKeys.KeySessionId = oDatos.keySessionId
+            oSixSecurityKeys.KeyPubChannel = oDatos.keyPublicChannel
             oSixSecurityKeys.Message = "Las llaves se obtuvieron exitosamente."
             oSixSecurityKeys.Success = True
         Catch ex As Exception
@@ -14897,10 +14902,11 @@ Public Class Service
     End Function
 
     <WebMethod(Description:="Valida si el PIN4 corresponde al número de tarjeta enviada.")> _
-    Public Function ValidarPin4(ByVal codigoKiosko As String, ByVal nroTarjeta As String, ByVal pin As String, ByVal pan As String, ByVal canal As String, ByVal sessionId As String) As EntityResultBool
+    Public Function ValidarPin4(ByVal codigoKiosko As String, ByVal nroTarjeta As String, ByVal pin As String, ByVal pan As String, ByVal sessionId As String) As EntityResultBool
         Log.ErrorLog("ValidarPin4 Inicio")
         Dim esNueva As Boolean = False
         Dim oEntityResultBool As New EntityResultBool
+        Dim oTelematicoClient As New TelematicoService.TelematicoClient
 
         Try
             Dim oPin4TarjetaBloqueada As Pin4TarjetaBloqueada = BNPin4TarjetaBloqueada.Instancia.GetPin4TarjetaBloqueadaByNroTarjeta(nroTarjeta)
@@ -14922,7 +14928,7 @@ Public Class Service
                 oEntityResultBool.Message = oConfiguracionKiosko.Pin4MensajeBloqueo
                 oEntityResultBool.Success = False
             Else
-                Dim pinValido As Boolean = True
+                Dim pinValido As Boolean = oTelematicoClient.validarPin(pin, pan, Constantes.PIN4_CANAL, sessionId)
                 pinValido = False
                 If pinValido Then
                     oPin4TarjetaBloqueada.NroIntentos = 0
