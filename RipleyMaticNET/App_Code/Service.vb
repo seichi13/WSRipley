@@ -14929,7 +14929,6 @@ Public Class Service
                 oEntityResultBool.Success = False
             Else
                 Dim pinValido As Boolean = oTelematicoClient.validarPin(pin, pan, Constantes.PIN4_CANAL, sessionId)
-                pinValido = False
                 If pinValido Then
                     oPin4TarjetaBloqueada.NroIntentos = 0
                     oPin4TarjetaBloqueada.EstaBloqueada = False
