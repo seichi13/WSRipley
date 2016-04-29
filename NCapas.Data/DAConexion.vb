@@ -57,15 +57,19 @@ Public Class DAConexion
                     result = "ERROR:No se pudo conectar al servidor de base de datos."
                 Else
                     Using cmdx As SqlClient.SqlCommand = oConexion.CreateCommand
-                    Dim m_ssql As String = "SELECT TIEMPO_DOC,TIEMPO_OPCIONES,NRO_ERROR_TARJETA, TIEMPO_OFERTAS FROM TIEMPO"
+                    Dim m_ssql As String = "SELECT TIEMPO_DOC,TIEMPO_OPCIONES,NRO_ERROR_TARJETA, TIEMPO_OFERTAS, PIN4_MOSTRAR FROM TIEMPO"
                         cmdx.CommandTimeout = 900
                         cmdx.CommandType = CommandType.Text
                         cmdx.CommandText = m_ssql
                         Using rd_time As SqlClient.SqlDataReader = cmdx.ExecuteReader
                             If rd_time.Read = True Then
-                            result = IIf(IsDBNull(rd_time.Item("TIEMPO_DOC")), "0", rd_time.Item("TIEMPO_DOC").ToString) & "|\t|" & IIf(IsDBNull(rd_time.Item("TIEMPO_OPCIONES")), "0", rd_time.Item("TIEMPO_OPCIONES").ToString) & "|\t|" & IIf(IsDBNull(rd_time.Item("NRO_ERROR_TARJETA")), "0", rd_time.Item("NRO_ERROR_TARJETA").ToString) & "|\t|" & IIf(IsDBNull(rd_time.Item("TIEMPO_OFERTAS")), "0", rd_time.Item("TIEMPO_OFERTAS").ToString)
+                            result = IIf(IsDBNull(rd_time.Item("TIEMPO_DOC")), "0", rd_time.Item("TIEMPO_DOC").ToString) & "|\t|" &
+                                IIf(IsDBNull(rd_time.Item("TIEMPO_OPCIONES")), "0", rd_time.Item("TIEMPO_OPCIONES").ToString) & "|\t|" &
+                                IIf(IsDBNull(rd_time.Item("NRO_ERROR_TARJETA")), "0", rd_time.Item("NRO_ERROR_TARJETA").ToString) & "|\t|" &
+                                IIf(IsDBNull(rd_time.Item("TIEMPO_OFERTAS")), "0", rd_time.Item("TIEMPO_OFERTAS").ToString) & "|\t|" &
+                                IIf(IsDBNull(rd_time.Item("PIN4_MOSTRAR")), "0", rd_time.Item("PIN4_MOSTRAR").ToString)
                             Else
-                            result = "5" & "|\t|" & "10" & "|\t|" & "5" & "|\t|" & "30"
+                            result = "5" & "|\t|" & "10" & "|\t|" & "5" & "|\t|" & "30" & "|\t|" & "False"
                             End If
                         End Using
                     End Using
