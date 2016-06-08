@@ -18,10 +18,10 @@
     <ServiceContractMappings />
   </ClientOptions>
   <MetadataSources>
-    <MetadataSource Address="http://10.25.4.91:8080/WebServiceTelematico/Telematico?wsdl" Protocol="http" SourceId="1" />
+    <MetadataSource Address="http://10.25.2.22:8696/ws_MiddlewareRipley/SeguridadWebService?wsdl" Protocol="http" SourceId="1" />
   </MetadataSources>
   <Metadata>
-    <MetadataFile FileName="TelematicoService.wsdl" MetadataType="Wsdl" ID="c13f9d8b-ce55-4f7e-b043-bc1a80c0b33b" SourceId="1" SourceUrl="http://10.25.4.91:8080/WebServiceTelematico/Telematico?wsdl" />
+    <MetadataFile FileName="SeguridadWebServiceService.wsdl" MetadataType="Wsdl" ID="e8284c7e-a20b-462a-85a3-dae40a624220" SourceId="1" SourceUrl="http://10.25.2.22:8696/ws_MiddlewareRipley/SeguridadWebService?wsdl" />
   </Metadata>
   <Extensions>
     <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<SavedWcfConfigurationInformation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Version="9.1" CheckSum="Kqk7hgC73eKo/lOlYaaEJP7kY8g=">
+<SavedWcfConfigurationInformation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Version="9.1" CheckSum="sQgV2YsrA9seVdrcWEb53tWjX6A=">
   <bindingConfigurations>
-    <bindingConfiguration bindingType="basicHttpBinding" name="TelematicoServiceSoapBinding">
+    <bindingConfiguration bindingType="basicHttpBinding" name="SeguridadWebServiceServiceSoapBinding">
       <properties>
         <property path="/name" isComplexType="false" isExplicitlyDefined="true" clrType="System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-          <serializedValue>TelematicoServiceSoapBinding</serializedValue>
+          <serializedValue>SeguridadWebServiceServiceSoapBinding</serializedValue>
         </property>
         <property path="/closeTimeout" isComplexType="false" isExplicitlyDefined="true" clrType="System.TimeSpan, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
           <serializedValue />
@@ -112,10 +112,10 @@
     </bindingConfiguration>
   </bindingConfigurations>
   <endpoints>
-    <endpoint name="TelematicoPort" contract="TelematicoService.ITelematico" bindingType="basicHttpBinding" address="http://10.25.4.91:8080/WebServiceTelematico/Telematico" bindingConfiguration="TelematicoServiceSoapBinding">
+    <endpoint name="SeguridadWebServicePort" contract="SeguridadWebService.ISeguridadWebService" bindingType="basicHttpBinding" address="http://10.25.2.22:8696/ws_MiddlewareRipley/SeguridadWebService" bindingConfiguration="SeguridadWebServiceServiceSoapBinding">
       <properties>
         <property path="/address" isComplexType="false" isExplicitlyDefined="true" clrType="System.Uri, System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-          <serializedValue>http://10.25.4.91:8080/WebServiceTelematico/Telematico</serializedValue>
+          <serializedValue>http://10.25.2.22:8696/ws_MiddlewareRipley/SeguridadWebService</serializedValue>
         </property>
         <property path="/behaviorConfiguration" isComplexType="false" isExplicitlyDefined="false" clrType="System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
           <serializedValue />
@@ -124,10 +124,10 @@
           <serializedValue>basicHttpBinding</serializedValue>
         </property>
         <property path="/bindingConfiguration" isComplexType="false" isExplicitlyDefined="true" clrType="System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-          <serializedValue>TelematicoServiceSoapBinding</serializedValue>
+          <serializedValue>SeguridadWebServiceServiceSoapBinding</serializedValue>
         </property>
         <property path="/contract" isComplexType="false" isExplicitlyDefined="true" clrType="System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-          <serializedValue>TelematicoService.ITelematico</serializedValue>
+          <serializedValue>SeguridadWebService.ISeguridadWebService</serializedValue>
         </property>
         <property path="/headers" isComplexType="true" isExplicitlyDefined="false" clrType="System.ServiceModel.Configuration.AddressHeaderCollectionElement, System.ServiceModel, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
           <serializedValue>System.ServiceModel.Configuration.AddressHeaderCollectionElement</serializedValue>
@@ -187,7 +187,7 @@
           <serializedValue>False</serializedValue>
         </property>
         <property path="/name" isComplexType="false" isExplicitlyDefined="true" clrType="System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-          <serializedValue>TelematicoPort</serializedValue>
+          <serializedValue>SeguridadWebServicePort</serializedValue>
         </property>
         <property path="/kind" isComplexType="false" isExplicitlyDefined="false" clrType="System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
           <serializedValue />

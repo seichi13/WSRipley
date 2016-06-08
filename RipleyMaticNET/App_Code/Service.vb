@@ -14846,14 +14846,13 @@ Public Class Service
     Public Function GetKeysSixSecurity(ByVal sessionId As String) As SixSecurityKeys
         Log.ErrorLog("GetKeysSixSecurity Inicio")
         Dim oSixSecurityKeys As New SixSecurityKeys
-        Dim oDatos As TelematicoService.datos
-        Dim oTelematicoClient As New TelematicoService.TelematicoClient
+        Dim oLlavePublica As SeguridadWebService.dtolLavePublica
+        Dim oSeguridadWebServiceClient As New SeguridadWebService.SeguridadWebServiceClient
 
         Try
-            oDatos = oTelematicoClient.keySession(sessionId, Constantes.PIN4_CANAL)
-            oSixSecurityKeys.SessionId = oDatos.sessionId
-            oSixSecurityKeys.KeySessionId = oDatos.keySessionId
-            oSixSecurityKeys.KeyPubChannel = oDatos.keyPublicChannel
+            oLlavePublica = oSeguridadWebServiceClient.obtenerClavePublica(Constantes.PIN4_CANAL, sessionId)
+            oSixSecurityKeys.KeySessionId = oLlavePublica.keySessionId
+            oSixSecurityKeys.KeyPubChannel = oLlavePublica.llavePublica
             oSixSecurityKeys.Message = "Las llaves se obtuvieron exitosamente."
             oSixSecurityKeys.Success = True
         Catch ex As Exception
@@ -14870,7 +14869,17 @@ Public Class Service
     <WebMethod(Description:="Retorna un valor indicando si la tarjeta está bloqueada.")> _
     Public Function TarjetaEstaBloqueada(ByVal codigoKiosko As String, ByVal nroTarjeta As String) As EntityResultBool
         Log.ErrorLog("TarjetaEstaBloqueada Inicio")
+        Log.ErrorLog("TarjetaEstaBloqueada codigoKiosko:" & codigoKiosko)
+        Log.ErrorLog("TarjetaEstaBloqueada nroTarjeta:" & nroTarjeta)
         Dim oEntityResultBool As New EntityResultBool
+
+        If nroTarjeta.Length < 18 Then
+            oEntityResultBool.Success = False
+            oEntityResultBool.Message = "El número de tarjeta proporcionado es inválido"
+            oEntityResultBool.Result = False
+        End If
+        nroTarjeta = nroTarjeta.Substring(2, 16)
+        Log.ErrorLog("TarjetaEstaBloqueada nroTarjeta  modificada:" & nroTarjeta)
 
         Try
             Dim oPin4TarjetaBloqueada As Pin4TarjetaBloqueada = BNPin4TarjetaBloqueada.Instancia.GetPin4TarjetaBloqueadaByNroTarjeta(nroTarjeta)
@@ -14902,11 +14911,14 @@ Public Class Service
     End Function
 
     <WebMethod(Description:="Valida si el PIN4 corresponde al número de tarjeta enviada.")> _
-    Public Function ValidarPin4(ByVal codigoKiosko As String, ByVal nroTarjeta As String, ByVal pin As String, ByVal pan As String, ByVal sessionId As String) As EntityResultBool
+    Public Function ValidarPin4(ByVal codigoKiosko As String, ByVal nroTarjeta As String, ByVal pin As String, ByVal pan As String, ByVal sessionId As String, ByVal keySessionId As String) As EntityResultBool
         Log.ErrorLog("ValidarPin4 Inicio")
+        Log.ErrorLog("ValidarPin4 nroTarjeta:" & nroTarjeta)
+
         Dim esNueva As Boolean = False
         Dim oEntityResultBool As New EntityResultBool
-        Dim oTelematicoClient As New TelematicoService.TelematicoClient
+        Dim oValidacionPIN As SeguridadWebService.dtoValidacionPIN
+        Dim oSeguridadWebServiceClient As New SeguridadWebService.SeguridadWebServiceClient
 
         Try
             Dim oPin4TarjetaBloqueada As Pin4TarjetaBloqueada = BNPin4TarjetaBloqueada.Instancia.GetPin4TarjetaBloqueadaByNroTarjeta(nroTarjeta)
@@ -14926,9 +14938,14 @@ Public Class Service
             If oPin4TarjetaBloqueada.EstaBloqueada Then
                 oEntityResultBool.Result = False
                 oEntityResultBool.Message = oConfiguracionKiosko.Pin4MensajeBloqueo
-                oEntityResultBool.Success = False
+                oEntityResultBool.Success = True
             Else
-                Dim pinValido As Boolean = oTelematicoClient.validarPin(pin, pan, Constantes.PIN4_CANAL, sessionId)
+                oValidacionPIN = oSeguridadWebServiceClient.validacionPin(Constantes.PIN4_CANAL, sessionId, keySessionId, pin, pan)
+                If oValidacionPIN.codigoValidacion <> "0" And oValidacionPIN.codigoValidacion <> "1" Then
+                    Throw New Exception(oValidacionPIN.mensajeValidacion)
+                End If
+                Dim pinValido As Boolean = (oValidacionPIN.codigoValidacion = "1")
+
                 If pinValido Then
                     oPin4TarjetaBloqueada.NroIntentos = 0
                     oPin4TarjetaBloqueada.EstaBloqueada = False
