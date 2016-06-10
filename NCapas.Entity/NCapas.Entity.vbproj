@@ -72,6 +72,7 @@
     <Compile Include="Pin4TarjetaBloqueada.vb" />
     <Compile Include="EntityResultBool.vb" />
     <Compile Include="EntityResult.vb" />
+    <Compile Include="ValidacionTarjeta.vb" />
     <Compile Include="SixSecurityKeys.vb" />
     <Compile Include="Factor.vb" />
     <Compile Include="IncrementoLinea.vb" />
