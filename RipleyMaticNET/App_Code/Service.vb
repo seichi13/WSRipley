@@ -14871,21 +14871,18 @@ Public Class Service
         If nroTarjeta.Length < 18 Then
             oEntityResultBool.Success = False
             oEntityResultBool.Message = "El número de tarjeta proporcionado es inválido"
-            oEntityResultBool.Result = False
+            Return oEntityResultBool
         End If
         nroTarjeta = nroTarjeta.Substring(2, 16)
 
         Try
-            Dim oPin4TarjetaBloqueada As Pin4TarjetaBloqueada = BNPin4TarjetaBloqueada.Instancia.GetPin4TarjetaBloqueadaByNroTarjeta(nroTarjeta)
+            Dim oPin4TarjetaBloqueada As Pin4TarjetaBloqueada = BNPin4TarjetaBloqueada.Instancia.GetByNroTarjeta(nroTarjeta)
             Dim oConfiguracionKiosko As ConfiguracionKiosko = BNConfiguracionKiosco.Instancia.BuscarConfiguracionKioskoPorCodigoKiosco(codigoKiosko)
 
-            If IsNothing(oPin4TarjetaBloqueada) Then
+            If BNPin4TarjetaBloqueada.Instancia.ValidateCreateNewInstance(oPin4TarjetaBloqueada, oConfiguracionKiosko) Then
                 oPin4TarjetaBloqueada = New Pin4TarjetaBloqueada
-            ElseIf oConfiguracionKiosko.Pin4Intentos = 0 Or _
-                (oPin4TarjetaBloqueada.EstaBloqueada And oPin4TarjetaBloqueada.FechaBloqueo.AddHours(oConfiguracionKiosko.Pin4HorasBloqueo) < oPin4TarjetaBloqueada.FechaActual) Then
-
-                oPin4TarjetaBloqueada.EstaBloqueada = False
-                BNPin4TarjetaBloqueada.Instancia.UpdatePin4TarjetaBloqueadaByNroTarjeta(oPin4TarjetaBloqueada)
+                oPin4TarjetaBloqueada.NroTarjeta = nroTarjeta
+                BNPin4TarjetaBloqueada.Instancia.InsertByNroTarjeta(oPin4TarjetaBloqueada)
             End If
 
             oEntityResultBool.Result = oPin4TarjetaBloqueada.EstaBloqueada
@@ -14904,22 +14901,19 @@ Public Class Service
     <WebMethod(Description:="Valida si el PIN4 corresponde al número de tarjeta enviada.")> _
     Public Function ValidarPin4(ByVal codigoKiosko As String, ByVal nroTarjeta As String, ByVal pin As String, ByVal pan As String, ByVal sessionId As String, ByVal keySessionId As String, ByVal nroIntentos As Integer) As ValidacionTarjeta
         Dim esNueva As Boolean = False
+        Dim estaModificada As Boolean = False
         Dim oValidacionTarjeta As New ValidacionTarjeta
         Dim oValidacionPIN As SeguridadWebService.dtoValidacionPIN
         Dim oSeguridadWebServiceClient As New SeguridadWebService.SeguridadWebServiceClient
 
         Try
-            Dim oPin4TarjetaBloqueada As Pin4TarjetaBloqueada = BNPin4TarjetaBloqueada.Instancia.GetPin4TarjetaBloqueadaByNroTarjeta(nroTarjeta)
+            Dim oPin4TarjetaBloqueada As Pin4TarjetaBloqueada = BNPin4TarjetaBloqueada.Instancia.GetByNroTarjeta(nroTarjeta)
             Dim oConfiguracionKiosko As ConfiguracionKiosko = BNConfiguracionKiosco.Instancia.BuscarConfiguracionKioskoPorCodigoKiosco(codigoKiosko)
 
-            If IsNothing(oPin4TarjetaBloqueada) Then
+            If BNPin4TarjetaBloqueada.Instancia.ValidateCreateNewInstance(oPin4TarjetaBloqueada, oConfiguracionKiosko) Then
                 esNueva = True
                 oPin4TarjetaBloqueada = New Pin4TarjetaBloqueada
                 oPin4TarjetaBloqueada.NroTarjeta = nroTarjeta
-            ElseIf oConfiguracionKiosko.Pin4Intentos = 0 Or _
-                (oPin4TarjetaBloqueada.EstaBloqueada And oPin4TarjetaBloqueada.FechaBloqueo.AddHours(oConfiguracionKiosko.Pin4HorasBloqueo) < oPin4TarjetaBloqueada.FechaActual) Then
-
-                oPin4TarjetaBloqueada.EstaBloqueada = False
             End If
 
             If Not oPin4TarjetaBloqueada.EstaBloqueada Then
@@ -14929,16 +14923,20 @@ Public Class Service
                 End If
                 oValidacionTarjeta.Valida = (oValidacionPIN.codigoValidacion = "0")
 
-                If (Not oValidacionTarjeta.Valida) And oConfiguracionKiosko.Pin4Intentos > 0 And oConfiguracionKiosko.Pin4HorasBloqueo Then
-                    oPin4TarjetaBloqueada.EstaBloqueada = (nroIntentos >= oConfiguracionKiosko.Pin4Intentos)
+                If (Not oValidacionTarjeta.Valida) And nroIntentos >= oConfiguracionKiosko.Pin4Intentos And _
+                    oConfiguracionKiosko.Pin4Intentos > 0 And oConfiguracionKiosko.Pin4HorasBloqueo > 0 Then
+
+                    estaModificada = True
+                    oPin4TarjetaBloqueada.EstaBloqueada = True
+                    oPin4TarjetaBloqueada.NroIntentos = nroIntentos
                 End If
             End If
             oValidacionTarjeta.Bloqueada = oPin4TarjetaBloqueada.EstaBloqueada
 
             If esNueva Then
-                BNPin4TarjetaBloqueada.Instancia.InsertPin4TarjetaBloqueadaByNroTarjeta(oPin4TarjetaBloqueada)
-            Else
-                BNPin4TarjetaBloqueada.Instancia.UpdatePin4TarjetaBloqueadaByNroTarjeta(oPin4TarjetaBloqueada)
+                BNPin4TarjetaBloqueada.Instancia.InsertByNroTarjeta(oPin4TarjetaBloqueada)
+            ElseIf estaModificada Then
+                BNPin4TarjetaBloqueada.Instancia.UpdateByNroTarjeta(oPin4TarjetaBloqueada)
             End If
         Catch ex As Exception
             Log.ErrorLog("ValidarPin4 Exception: " + ex.Message)

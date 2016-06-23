@@ -6,7 +6,7 @@ Imports NCapas.Utility.Log
 Public Class DAPin4TarjetaBloqueada
     Inherits Singleton(Of DAPin4TarjetaBloqueada)
 
-    Public Function GetPin4TarjetaBloqueadaByNroTarjeta(ByVal nroTarjeta As String) As Pin4TarjetaBloqueada
+    Public Function GetByNroTarjeta(ByVal nroTarjeta As String) As Pin4TarjetaBloqueada
         Dim oPin4TarjetaBloqueada As Pin4TarjetaBloqueada = Nothing
         Dim sMensajeError_SQL As String = ""
 
@@ -47,7 +47,7 @@ Public Class DAPin4TarjetaBloqueada
         Return oPin4TarjetaBloqueada
     End Function
 
-    Public Sub InsertPin4TarjetaBloqueadaByNroTarjeta(ByVal oPin4TarjetaBloqueada As Pin4TarjetaBloqueada)
+    Public Sub InsertByNroTarjeta(ByVal oPin4TarjetaBloqueada As Pin4TarjetaBloqueada)
         Dim sMensajeError_SQL As String = ""
         Using oConexion As SqlConnection = DAConexion.Instancia.SQL_ConnectionOpen(DAConexion.Instancia.Get_CadenaConexion(), sMensajeError_SQL)
             If Not String.IsNullOrEmpty(sMensajeError_SQL) Then
@@ -70,7 +70,7 @@ Public Class DAPin4TarjetaBloqueada
         End Using
     End Sub
 
-    Public Sub UpdatePin4TarjetaBloqueadaByNroTarjeta(ByVal oPin4TarjetaBloqueada As Pin4TarjetaBloqueada)
+    Public Sub UpdateByNroTarjeta(ByVal oPin4TarjetaBloqueada As Pin4TarjetaBloqueada)
         Dim sMensajeError_SQL As String = ""
         Using oConexion As SqlConnection = DAConexion.Instancia.SQL_ConnectionOpen(DAConexion.Instancia.Get_CadenaConexion(), sMensajeError_SQL)
             If Not String.IsNullOrEmpty(sMensajeError_SQL) Then
