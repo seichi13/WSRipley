@@ -14932,6 +14932,7 @@ Public Class Service
                 End If
             End If
             oValidacionTarjeta.Bloqueada = oPin4TarjetaBloqueada.EstaBloqueada
+            oValidacionTarjeta.Message = IIf(oPin4TarjetaBloqueada.EstaBloqueada, oConfiguracionKiosko.Pin4MensajeBloqueo, "")
 
             If esNueva Then
                 BNPin4TarjetaBloqueada.Instancia.InsertByNroTarjeta(oPin4TarjetaBloqueada)
